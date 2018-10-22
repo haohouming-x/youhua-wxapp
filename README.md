@@ -209,6 +209,63 @@ request.interceptors.response.use(
 )
 ```
 
+现有date插件(plugins/date/index.js)
+
+* 该插件基于`dayjs`提供了日期转换(date/echaned.js)
+
+```js
+// 获取当前日期并返回原生date对象
+this.$date().get('date')
+
+// 获取当前日期并返回时间戳
+this.$date().get('timestamp')
+
+// 获取当期日期并返回处理后的字符
+
+// 返回2018-10-22
+this.$date().format('date')
+
+// 返回2018-10-22 10:22:33
+this.$date().format('datetime')
+
+// 返回自定义规范
+this.$date().format('YYYY/MM/dd hh:mm:ss')
+
+// 对比2个日期
+
+// 返回相差的时间戳
+this.$date('2018-03-10').diff('2018-04-10')
+
+// 返回相差小时数(整数)
+this.$date('2018-03-10').diff('2018-04-10', 'hours')
+
+// 返回相差小时数(带小数)
+this.$date('2018-03-10').diff('2018-04-10', 'hours', true)
+
+// 返回相差天数(整数)
+this.$date('2018-03-10').diff('2018-04-10', 'days')
+
+// 返回相差天数(带小数)
+this.$date('2018-03-10').diff('2018-04-10', 'days'， true)
+
+// 为日期加时间
+// 运算符号+，增加。运算符-， 减少。
+// 标识符y:年,M:月,d:天,h:小时,m:分钟,s:秒,ms:毫秒
+this.$date('2018-03-10').compute('+1M, +2d').format('date') // 2018-04-12
+
+```
+
+现有math插件(plugins/numeral/index.js)
+
+* 该插件提供基本数字处理
+
+```js
+// 2位小数
+this.$math(2).toFixed(2) // 2.00
+this.$math(2.134).toFixed(2) // 2.13
+
+```
+
 也可以仿照iBox新增其他插件。(foo插件：plugins/foo/index.js)
 
 ## 坑

@@ -13,6 +13,7 @@
     "build:prod": "rimraf dist && node build/build.js prod"
   },
   "dependencies": {
+    "dayjs": "^1.7.7",
     "flyio": "^0.6.1",
     "mpvue": "^1.0.13",
     "mpvue-router-patch": "^0.2.1",
