@@ -134,7 +134,8 @@ this.$router.go(n)
 ```
 
 ## 辅助插件(自动注入)
-> src下plugins文件夹为自定义插件
+> src下plugins文件夹为自定义插件。类似utils，不过都放在`Vue`原型链上，方便追踪和适当时候使用`Vue`方法。
+
 现有ibox插件(plugins/ibox)
 
 * 该插件提供了验证插件(ibox/utils/validator.js)
@@ -143,49 +144,6 @@ this.$router.go(n)
 const foo = 'bar'
 // 是否为空
 this.$iBox.validator.isEmpty(foo)
-```
-
-* 该插件提供了请求插件(store/flyio/request.js)
-
-flyio/apiUrl目录下放按模块建文件，文件内容为模块请求路径的枚举。
-flyio/config.js为发起请求时的默认配置。
-
-```js
-// 请求
-this.$iBox.http(API, data)({method: 'get'})
-
-// 请求关闭默认加载提示
-this.$iBox.http(API, data)({method: 'get'}, {isLoading: false})
-
-// 请求错误关闭默认提示
-this.$iBox.http(API, data)({method: 'get'}, {isErrorDefaultTip: false})
-
-// 请求错误使用自定义处理
-this.$iBox.http(API, data)({method: 'get'}, {errorAction: false})
-  .catch(err => {
-    // ... 处理错误
-  })
-
-```
-
-可根据需要在interceptors.js编写请求发送和响应的拦截操作
-```js
-request.interceptors.request.use((request) => {
-  // 给所有请求添加自定义header
-  request.headers["X-Tag"]="flyio";
-
-  return request
-})
-request.interceptors.response.use(
-  (response, promise) => {
-    // 只将请求结果的data字段返回
-    return promise.resolve(response.data)
-  },
-  (err, promise) => { // 发生网络错误后会走到这里
-    // 直接返回错误
-    return promise.reject(err)
-  }
-)
 ```
 
 * 可自行在ibox/utils建文件，该文件名称为iBox下的插件名
@@ -205,7 +163,53 @@ export default {
 }
 ```
 
-* 也可以仿照iBox新增其他插件。(foo插件：plugins/foo/index.js)
+现有http插件(plugins/http/index.js)
+
+* 该插件提供了数据请求
+
+apiUrl目录下放按模块建文件，文件内容为模块请求路径的枚举。
+flyio/config.js为发起请求时的默认配置。
+
+```js
+// 请求
+this.$http(API, {data, method: 'get'})
+
+// 请求关闭默认加载提示
+this.$http(API, {data, method: 'get'}, {isLoading: false})
+
+// 请求错误关闭默认提示
+this.$http(API, {data, method: 'get'}, {isErrorDefaultTip: false})
+
+// 请求错误使用自定义处理
+this.$http(API, {data, method: 'get'}, {errorAction: false})
+  .catch(err => {
+    // ... 处理错误
+  })
+```
+`API`为apiUrl定义的枚举键名
+
+* flyio/interceptors.js可根据需要编写请求发送和响应的拦截操作
+
+```js
+request.interceptors.request.use((request) => {
+  // 给所有请求添加自定义header
+  request.headers["X-Tag"]="flyio";
+
+  return request
+})
+request.interceptors.response.use(
+  (response, promise) => {
+    // 只将请求结果的data字段返回
+    return promise.resolve(response.data)
+  },
+  (err, promise) => { // 发生网络错误后会走到这里
+    // 直接返回错误
+    return promise.reject(err)
+  }
+)
+```
+
+也可以仿照iBox新增其他插件。(foo插件：plugins/foo/index.js)
 
 ## 坑
 

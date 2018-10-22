@@ -21,8 +21,8 @@ const actions = {
   decrement ({commit}) {
     commit('DECREMENT')
   },
-  getProvince ({commit}, params = {}) {
-    return Vue.iBox.http('globalUrl.getProvince', params)({method: 'get'})
+  getProvince ({commit}, data = {}) {
+    return Vue.$http('globalUrl.getProvince', {data, method: 'get'})
   }
 }
 

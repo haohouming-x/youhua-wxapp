@@ -1,5 +1,5 @@
 import Flyio from './interceptors'
-import API from './apiUrl'
+import API from '../apiUrl'
 import Config from './config'
 // 异常情况的错误处理
 const errorFunction = (_tipConfig, err) => {
@@ -21,8 +21,7 @@ const clearFunction = (_tipConfig) => {
 }
 
 // 接口请求封装函数
-const handleRequest = (url = '', data = {}) => {
-  return (flyConfig = {}, tipConfig = {}) => {
+const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
     let _url = API[url] || ''
     let flyio = Flyio.request(_url, data, {...Config.flyConfig, ...flyConfig})
 
@@ -54,7 +53,6 @@ const handleRequest = (url = '', data = {}) => {
     }).catch(err => {
       errorFunction(_tipConfig, err)
     })
-  }
 }
 
 export default handleRequest

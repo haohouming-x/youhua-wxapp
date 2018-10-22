@@ -1,6 +1,4 @@
 // iBoxPlugin
-import handleRequest from '@/store/flyio/request'
-
 const utilsContext = require.context('@/plugins/ibox/utils', true, /\.js$/)
 let utils = {}
 utilsContext.keys().forEach((modules) => {
@@ -16,7 +14,6 @@ export default {
   install (Vue) {
     const iBox = {
       ...utils,
-      http: handleRequest
     }
 
     Vue.iBox = iBox
