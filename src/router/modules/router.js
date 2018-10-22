@@ -16,5 +16,11 @@ module.exports = [
     config: {
       navigationBarTitleText: '日志'
     }
+  },
+  {
+    path: '/pages/home/home',
+    config: {
+      navigationBarTitleText: '首页'
+    }
   }
 ]
