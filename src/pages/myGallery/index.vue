@@ -1,0 +1,133 @@
+<template>
+  <div class="wrap">
+    <div class="item" v-for="(item, index) in datalist" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.url" /></div>
+      <div class="dis-flex">
+        <div>
+          <div class="marbot">{{item.name}}</div>
+          <div>{{item.size}}</div>
+        </div>
+        <div class="text-ri">
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.amount}}</text></div>
+          <text class="delete" v-if="!item.isreturen">删除</text>
+          <text class="return" v-else>退还</text>
+        </div>
+      </div>
+    </div>
+    <div class="history">查看历史记录></div>
+    <div class="bottom">
+      <div class="home">首页</div>
+      <div class="service">客服</div>
+      <div class="total">总计: <text class="item-amount">{{total}}</text></div>
+      <div class="pay">去结算</div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  data () {
+    return {
+      datalist: [
+        {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
+        {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
+      ],
+      total: '300'
+    }
+  },
+  created () {
+
+    },
+    methods: {
+
+    }
+}
+</script>
+<style>
+  .wrap{
+    background: #f5f5f5;
+    padding: 10rpx 0;
+  }
+  .item{
+    width: 100%;
+    
+    margin: 30rpx auto;
+    background: #fff;
+  }
+  .item-imgbox{
+    padding-top: 20rpx;
+    text-align: center;
+  }
+
+  .item-image{
+    width: 90%;
+  }
+  .item-amount::before{
+    content: "￥";
+  }
+  .item-amount{
+    color: #ea6f6c;
+  }
+  .marbot{
+    margin-bottom: 20rpx;
+  }
+  .dis-flex{
+    width:90%;
+    font-size: 24rpx;
+    margin: 20rpx auto;
+    padding-bottom: 20rpx;
+    display: flex;
+    justify-content: space-between;
+  }
+  .text-ri{
+    text-align: right;
+  }
+  .delete{
+    color:#a5a5a5;
+    text-align: center;
+    border: 1px solid #f29c37;
+    border-radius: 12rpx;
+    padding: 0 40rpx;
+  }
+  .return{
+    background: #f29c37;
+    text-align:center ;
+    color: #fff;
+    border-radius: 12rpx;
+    padding: 0 40rpx;
+  }
+  .history{
+    text-align: center;
+    margin-bottom: 100rpx;
+  }
+  .bottom{
+    position: fixed;
+    bottom: 0;
+    
+    width: 100%;
+    background: #fff;
+    display: flex;
+    text-align: center;
+  }
+  .home{
+    flex: 1;
+    height: 80rpx;
+    line-height: 80rpx;
+  }
+  .service{
+    flex: 1;
+    height: 80rpx;
+    line-height: 80rpx;
+  }
+  .total{
+    flex:3;
+    height: 80rpx;
+    line-height: 80rpx;
+  }
+  .pay{
+    flex:2;
+    background: #f29c37;
+    color:#fff;
+    height: 80rpx;
+    line-height: 80rpx;
+  }
+</style>

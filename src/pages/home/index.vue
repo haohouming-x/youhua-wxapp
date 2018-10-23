@@ -27,7 +27,6 @@
 </template>
 <script>
 import carouselFigure from '@/components/carouselFigure'
-console.log(carouselFigure)
 export default {
   components: {
     carouselFigure

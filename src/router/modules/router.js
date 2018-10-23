@@ -18,9 +18,15 @@ module.exports = [
     }
   },
   {
-    path: '/pages/home/home',
+    path: '/pages/home/index',
     config: {
       navigationBarTitleText: '首页'
+    }
+  },
+  {
+    path: '/pages/myGallery/index',
+    config: {
+      navigationBarTitleText: '我的画廊'
     }
   }
 ]
