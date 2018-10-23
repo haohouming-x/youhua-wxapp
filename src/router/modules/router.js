@@ -16,5 +16,11 @@ module.exports = [
     config: {
       navigationBarTitleText: '日志'
     }
+  },
+  {
+    path: '/pages/commonRule/commonRule',
+    config: {
+      navigationBarTitleText: '常见规则'
+    }
   }
 ]
