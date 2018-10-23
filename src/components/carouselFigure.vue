@@ -35,7 +35,7 @@
       swiperChange (e) {
         let index = e.mp.detail.current
         this.current = index
-        console.log(this.current)
+        // console.log(this.current)
       }
     }
 
