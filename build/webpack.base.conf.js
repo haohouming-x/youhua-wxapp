@@ -43,7 +43,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        include: [resolve('src')],
+        include: [resolve('src'), /mpvue-wxparse/],
         use: [
           'babel-loader',
           {
