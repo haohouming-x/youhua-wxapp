@@ -28,5 +28,11 @@ module.exports = [
     config: {
       navigationBarTitleText: '我的画廊'
     }
+  },
+  {
+    path: '/pages/goodsDetail/index',
+    config: {
+      navigationBarTitleText: '商品详情'
+    }
   }
 ]
