@@ -34,5 +34,11 @@ module.exports = [
     config: {
       navigationBarTitleText: '商品详情'
     }
+  },
+  {
+    path: '/pages/member/index',
+    config: {
+      navigationBarTitleText: '开通会员'
+    }
   }
 ]
