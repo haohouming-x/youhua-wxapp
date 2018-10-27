@@ -48,6 +48,25 @@
     line-height: 100rpx;
     font-size: 32rpx;
     color: #333;
+    position: relative;
+  }
+
+  .rule-raido_sel .rule-list_title::after {
+    content: " ";
+    display: inline-block;
+    height: 20rpx;
+    width: 20rpx;
+    border-width: 2px 2px 0 0;
+    border-color: #C8C8CD;
+    border-style: solid;
+    -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0) rotateZ(90deg);
+    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0) rotateZ(90deg);
+    position: relative;
+    top: -2px;
+    position: absolute;
+    top: 50%;
+    margin-top: -4px;
+    right: 2px;
   }
 
   .rule-raido_sel .rule-list_content {
@@ -65,6 +84,10 @@
 
   .rule-raido_sel li.on .rule-list_title {
     font-size: 36rpx;
+  }
+
+  .rule-raido_sel li.on .rule-list_title::after {
+    display: none;
   }
 
   .rule-raido_sel li.on .rule-list_content {
