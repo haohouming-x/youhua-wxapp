@@ -40,7 +40,7 @@
       </div>
 
     </div>
-    <div class="bottom">
+    <div class="bottom" @click="beMember()">
       开通会员租油画
     </div>
   </div>
@@ -59,7 +59,11 @@ export default {
     }
   },
   created() {},
-  methods: {}
+  methods: {
+    beMember() {
+      this.$router.push('/pages/member/index')
+    }
+  }
 }
 </script>
 <style>

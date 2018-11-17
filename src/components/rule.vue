@@ -16,7 +16,7 @@
       selectId: null
     },
     mounted() {
-      
+      console.log(this.ruleData);
     },
     methods: {
       openRule(item) {

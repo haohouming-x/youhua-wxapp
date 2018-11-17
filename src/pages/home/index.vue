@@ -22,14 +22,17 @@
           </div>
         </div>
       </div>
+      <normal-footer :footerData = "footerData"></normal-footer>
     </div>
 
 </template>
 <script>
 import carouselFigure from '@/components/carouselFigure'
+import normalFooter from '@/components/normalFooter'
 export default {
   components: {
-    carouselFigure
+    carouselFigure,
+    normalFooter
   },
   data () {
     return {
@@ -60,7 +63,26 @@ export default {
         {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
         {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
       ],
-      headline: '推荐商城'
+      headline: '推荐商城',
+      footerData: [
+        {
+          name: "首页",
+          clickStatus: false,
+          id: 0
+        },{
+          name: "购物车",
+          clickStatus: true,
+          id: 1
+        },{
+          name: "共享规则",
+          clickStatus: true,
+          id: 2
+        },{
+          name: "新手指南",
+          clickStatus: true,
+          id: 3
+        }
+      ]
     }
   },
  created () {},
