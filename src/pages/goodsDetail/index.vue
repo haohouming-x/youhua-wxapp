@@ -70,7 +70,7 @@ export default {
       this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
     },
     toHomePage() {
-      this.$router.push('/pages/index/index')
+      this.$router.push('/pages/home/index')
     },
     rent() {
       this.$router.push('/pages/myGallery/index')

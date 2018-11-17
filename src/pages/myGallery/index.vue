@@ -45,7 +45,7 @@ export default {
         this.$router.push('/pages/myGallery/payPage')
       },
       toHomePage() {
-        this.$router.push('/pages/index/index')
+        this.$router.push('/pages/home/index')
       },
     }
 }

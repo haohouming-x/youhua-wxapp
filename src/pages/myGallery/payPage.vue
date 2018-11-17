@@ -72,7 +72,7 @@
     },
     methods: {
       toHomePage() {
-        this.$router.push('/pages/index/index')
+        this.$router.push('/pages/home/index')
       }
     }
   }
