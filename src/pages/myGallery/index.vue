@@ -14,12 +14,12 @@
         </div>
       </div>
     </div>
-    <div class="history">查看历史记录></div>
+    <div class="history" @click="toHistoryPage">查看历史记录></div>
     <div class="bottom">
-      <div class="home">首页</div>
+      <div class="home" @click="toHomePage">首页</div>
       <div class="service">客服</div>
       <div class="total">总计: <text class="item-amount">{{total}}</text></div>
-      <div class="pay">去结算</div>
+      <div class="pay" @click="pay">去结算</div>
     </div>
   </div>
 </template>
@@ -38,7 +38,15 @@ export default {
 
     },
     methods: {
-
+      toHistoryPage() {
+        this.$router.push('/pages/myGallery/historyRecord')
+      },
+      pay() {
+        this.$router.push('/pages/myGallery/payPage')
+      },
+      toHomePage() {
+        this.$router.push('/pages/index/index')
+      },
     }
 }
 </script>

@@ -20,17 +20,17 @@
       <div class="marleft">同类油画推荐</div>
       <div class="over">
         
-        <div class="item" v-for="(item,index) in recommed" :key="index">
+        <div class="item" v-for="(item,index) in recommed" :key="index" @click="toDetails(item.id)">
           <image class="item-img" mode="widthFix" :src="item.url" />
           <div>{{item.name}}</div>
           <div>{{item.title}}</div>
         </div>
       </div>
       <div class="bottom">
-        <div class="home">首页</div>
+        <div class="home" @click="toHomePage">首页</div>
         <div class="service">客服</div>
         <div class="collect">收藏</div>
-        <div class="rent">租这副</div>
+        <div class="rent" @click="rent">租这幅</div>
       </div>
   </div>
 </template>
@@ -53,9 +53,9 @@ export default {
         deposit: '100'
       },
       recommed: [
-        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐'},
-        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐'},
-        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐'}
+        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:0},
+        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:1},
+        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:2}
       ]
     }
   },
@@ -65,6 +65,15 @@ export default {
     },
     navigate(href, e) {
       // do something
+    },
+    toDetails(id) {
+      this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
+    },
+    toHomePage() {
+      this.$router.push('/pages/index/index')
+    },
+    rent() {
+      this.$router.push('/pages/myGallery/index')
     }
   },
   created() {

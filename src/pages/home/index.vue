@@ -3,7 +3,7 @@
     <div>
       <carousel-figure :option="swiperOption" :swiperImgs="imgUrls"></carousel-figure>
       <div v-if="!isMember">
-        <div class=" memberbox"></div>
+        <div class=" memberbox" @click="beMember"></div>
       </div>
       <div class="classifybox">
         <div class="classify-item" v-for="(item,index) in  classify" :key="index" @tap="handleClassify(item)">
@@ -14,7 +14,7 @@
       <div class="goodsbox">
         <div class="marleft">{{headline}}</div>
         <div class="goodsbox-outer">
-          <div v-for="(item,index) in goods" :key="index" class="goods-item">
+          <div v-for="(item,index) in goods" :key="index" class="goods-item" @click="toDetails(item.id)">
             <image mode="widthFix" class="good-item-img" :src="item.url" />
             <div>{{item.name}}</div>
             <div>{{item.title}}</div>
@@ -56,9 +56,9 @@ export default {
         {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
       ],
       goods: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm"}
+        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
+        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
+        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
       ],
       headline: '推荐商城'
     }
@@ -68,6 +68,12 @@ export default {
    handleClassify (item){
     console.log(item)
     this.headline = item.title
+   },
+   toDetails(id) {
+    this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
+   },
+   beMember() {
+     this.$router.push('/pages/member/index')
    }
  }
   

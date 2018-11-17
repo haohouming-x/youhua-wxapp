@@ -29,7 +29,7 @@
       <div class="pay_footer">
         <div class="footer_inner">
           <div class="inner_le">
-            <div class="footer-le_btn">
+            <div class="footer-le_btn" @click="toHomePage">
               <img src="../../assets/images/icon1.png" alt="">
               <p class="btn_text">首页</p>
             </div>
@@ -68,6 +68,11 @@
             status: 1
           }
         ]
+      }
+    },
+    methods: {
+      toHomePage() {
+        this.$router.push('/pages/index/index')
       }
     }
   }
