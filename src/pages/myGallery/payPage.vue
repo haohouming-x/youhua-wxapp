@@ -18,7 +18,7 @@
           <div class="img_box">
             <img src="../../assets/images/img1.png" alt="">
           </div>
-          <div class="info_box">
+          <div class="p-info_box">
             <div class="name">{{ item.name }}</div>
             <div class="hold_prc">押金：￥{{ item.hold_prc }}</div>
             <div class="old_prc">￥{{ item.old_prc }}</div>
@@ -26,6 +26,25 @@
           <div class="info_status" :class="item.status === 0 ? 'clr-orange' : ''">{{ item.status == 0 ? '待退还' : '待寄送' }}</div>
         </li>
       </ul>
+      <div class="pay_footer">
+        <div class="footer_inner">
+          <div class="inner_le">
+            <div class="footer-le_btn">
+              <img src="../../assets/images/icon1.png" alt="">
+              <p class="btn_text">首页</p>
+            </div>
+            <div class="footer-le_btn">
+              <img src="../../assets/images/icon2.png" alt="">
+              <p class="btn_text">客服</p>
+            </div>
+            <div class="tips_box">
+              <p class="clr_text">押金：￥300</p>
+              <p class="clr_text">随时可退</p>
+            </div>
+          </div>
+          <div class="inner_ri">付款</div>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -119,21 +138,28 @@
     display: block;
   }
 
-  .order_list li .info_box .name {
+  .order_list li .p-info_box {
+    overflow: hidden;
+  }
+
+  .order_list li .p-info_box .name {
     line-height: 36rpx;
     font-size: 36rpx;
     color: #333;
     margin: 30rpx 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .order_list li .info_box .hold_prc {
+  .order_list li .p-info_box .hold_prc {
     line-height: 28rpx;
     font-size: 28rpx;
     color: #333;
     margin-bottom: 30rpx;
   }
 
-  .order_list li .info_box .old_prc {
+  .order_list li .p-info_box .old_prc {
     width: 100rpx;
     line-height: 28rpx;
     font-size: 28rpx;
@@ -141,7 +167,7 @@
     position: relative;
   }
 
-  .info_box .old_prc::after {
+  .p-info_box .old_prc::after {
     content: " ";
     width: 100%;
     height: 1px;
@@ -166,6 +192,77 @@
 
   .info_status.clr-orange {
     color: #f7bf64;
+  }
+
+  .pay_footer {
+    height: 100rpx;
+  }
+
+  .pay_footer .footer_inner {
+    width: 100%;
+    height: 100rpx;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+    position: fixed;
+    bottom: 0;
+    overflow: hidden;
+  }
+
+  .footer_inner .inner_le {
+    width: 50%;
+    float: left;
+  }
+
+  .footer_inner .inner_le .footer-le_btn {
+    width: 100rpx;
+    height: 100rpx;
+    position: relative;
+    overflow: hidden;
+    float: left;
+  }
+
+  .footer_inner .inner_le .footer-le_btn::after {
+    content: " ";
+    width: 1rpx;
+    height: 50rpx;
+    background-color: #eee;
+    position: absolute;
+    right: 1rpx;
+    top: 1px;
+    bottom: 1px;
+    margin: auto;
+  }
+
+  .footer-le_btn img {
+    width: 50rpx;
+    height: 50rpx;
+    margin: 10rpx auto;
+    display: block;
+  }
+
+  .footer-le_btn .btn_text {
+    font-size: 24rpx;
+    line-height: 24rpx;
+    text-align: center;
+    color: #666;
+  }
+
+  .tips_box .clr_text {
+    margin-top: 20rpx;
+    line-height: 24rpx;
+    text-align: center;
+    font-size: 24rpx;
+    color: #f7bf64;
+  }
+
+  .footer_inner .inner_ri {
+    width: 50%;
+    line-height: 100rpx;
+    text-align: center;
+    font-size: 36rpx;
+    color: #fff;
+    float: left;
+    background-color: #f7bf64;
   }
 </style>
 
