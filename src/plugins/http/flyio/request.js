@@ -23,6 +23,8 @@ const clearFunction = (_tipConfig) => {
 // 接口请求封装函数
 const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
     let _url = API[url] || ''
+    _url = Config.host + _url;
+
     let flyio = Flyio.request(_url, data, {...Config.flyConfig, ...flyConfig})
 
     let _tipConfig = {...Config.reqConfig, ...tipConfig}
