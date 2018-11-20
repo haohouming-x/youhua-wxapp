@@ -47,11 +47,7 @@ const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
     })
     // 返回请求
     return flyio.then((res) => {
-      if (res.returnCode === '0') {
         return res
-      } else {
-        errorFunction(_tipConfig, res)
-      }
     }).catch(err => {
       errorFunction(_tipConfig, err)
     })
