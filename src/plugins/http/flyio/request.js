@@ -22,7 +22,12 @@ const clearFunction = (_tipConfig) => {
 
 // 接口请求封装函数
 const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
-    let _url = API[url] || ''
+    const [enumName, params] = url.split('@');
+
+    let _url = API[enumName] || '';
+
+    _url = params ? _url.replace(/\{([^{}]+)\}/g, (_, key) => params.match(key + "( ?):( ?)(.?)")[3]) : _url;
+
     _url = Config.host + _url;
 
     let flyio = Flyio.request(_url, data, {...Config.flyConfig, ...flyConfig})
