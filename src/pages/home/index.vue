@@ -7,8 +7,8 @@
       </div>
       <div class="classifybox">
         <div class="classify-item" v-for="(item,index) in  classify" :key="index" @tap="handleClassify(item)">
-          <image class="classify-img"  :src="item.url" />
-          <div class="font-size--24">{{item.title}}</div>
+          <image class="classify-img"  :src="item.image" />
+          <div class="font-size--24">{{item.name}}</div>
         </div>
       </div>
       <div class="goodsbox">
@@ -27,6 +27,7 @@
 
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import carouselFigure from '@/components/carouselFigure'
 import normalFooter from '@/components/normalFooter'
 export default {
@@ -44,20 +45,22 @@ export default {
         indicatorDots: true
       },
       isMember: false,
-      imgUrls: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"}
-      ],
-      classify: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "推荐商城"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "收藏"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
-      ],
+      // imgUrls: [
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"}
+      // ],
+      imgUrls: [],
+      // classify: [
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "推荐商城"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "收藏"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
+      // ],
+      classify: [],
       goods: [
         {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
         {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
@@ -82,14 +85,59 @@ export default {
           clickStatus: true,
           id: 3
         }
-      ]
+      ],
+      bannerpage: 1,
+      imgdata: [],
+      defaultnum: ''
     }
   },
- created () {},
+  computed: {
+    ...mapState({
+      count: state => state.home.count
+    }) 
+  },
+ created () {
+  //  this.getbanners()
+  this.getbanner({
+  }).then((res) => {
+    this.imgUrls = res
+    // console.log(this.imgUrls)
+  })
+  this.getClassifies({}).then((res) => {
+    // console.log(res)
+    this.classify = res
+    this.defaultnum = res[0].id
+  })
+  this.getClassGoods({
+      id: this.defaultnum
+    }).then((res) => {
+      console.log(res)
+    })
+ },
  methods: {
+  //  getbanners () {
+  //    let data = {
+  //      page: this.bannerpage
+  //    }
+  //    this.$http('home.getBanner', {data, method: 'get'}).then((res) => {
+  //     console.log(res)
+  //   }).catch((err) => {
+  //     console.log(err)
+  //   })
+  //  },
+   ...mapActions('home', [
+     'getbanner',
+     'getClassifies',
+     'getClassGoods'
+   ]),
    handleClassify (item){
-    console.log(item)
+    console.log(item.id)
     this.headline = item.title
+    this.getClassGoods({
+      id: item.id
+    }).then((res) => {
+      console.log(res)
+    })
    },
    toDetails(id) {
     this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
