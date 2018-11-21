@@ -22,7 +22,7 @@ const actions = {
     commit('DECREMENT')
   },
   getProvince ({commit}, data = {}) {
-    return Vue.$http('globalUrl.getProvince', {data, method: 'get'})
+    return Vue.$http(`globalUrl.getProvince`, {data, method: 'get'})
   }
 }
 
