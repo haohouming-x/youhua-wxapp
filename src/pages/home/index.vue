@@ -1,12 +1,12 @@
 <template>
-      
+
     <div>
       <carousel-figure :option="swiperOption" :swiperImgs="imgUrls"></carousel-figure>
       <div v-if="!isMember">
         <div class=" memberbox" @click="beMember"></div>
       </div>
       <div class="classifybox">
-        <div class="classify-item" v-for="(item,index) in  classify" :key="index" @click="handleClassify(item)">
+        <div class="classify-item" v-for="(item,index) in  classifies" :key="index" @click="handleClassify(item)">
           <image class="classify-img"  :src="item.image" />
           <div class="font-size--24">{{item.name}}</div>
         </div>
@@ -27,7 +27,7 @@
 
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import carouselFigure from '@/components/carouselFigure'
 import normalFooter from '@/components/normalFooter'
 export default {
@@ -49,7 +49,7 @@ export default {
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"}
       // ],
-      imgUrls: [],
+      // imgUrls: [],
       // classify: [
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "推荐商城"},
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "收藏"},
@@ -60,13 +60,13 @@ export default {
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
       // ],
-      classify: [],
+      // classify: [],
       // goods: [
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
       // ],
-      goods: [],
+      // goods: [],
       headline: '',
       footerData: [
         {
@@ -87,65 +87,45 @@ export default {
           id: 3
         }
       ],
+      selectedClassifyIndex: 0,
       bannerpage: 1,
       imgdata: [],
       defaultnum: ''
     }
   },
   computed: {
-    ...mapState({
-      count: state => state.home.count
-    }) 
+    ...mapGetters({
+      banners: 'banner/list',
+      classifies: 'classify/list',
+      goods: 'goods/currentList'
+    }),
+    imgUrls() {
+      return this.banners.map(v => ({url: v.image}))
+    }
   },
  created () {
   //  this.getbanners()
-  
-  
+
+
  },
  mounted () {
-Promise.all([this.togetBanner(),this.toClassifies()]).then((res) => {
-    console.log(res)
-  })
+    this.getBannerList();
+    this.getClassifyListAndGoods({}, this.selectedClassifyIndex)
+        .then(v => {
+            this.headline = this.classifies[0].name
+        });
  },
  methods: {
-   ...mapActions('home', [
-     'getbanner',
-     'getClassifies',
-     'getClassGoods'
-   ]),
-    togetClassGoods () {
-      console.log(this.defaultnum)
-      this.getClassGoods({
-        id: this.defaultnum
-      }).then((res) => {
-        console.log(res)
-
-      })
-    },
-    togetBanner () {
-      this.getbanner({
-      }).then((res) => {
-        this.imgUrls = res
-      })
-    },
-    toClassifies () {
-      this.getClassifies({}).then((res) => {
-        // console.log(res)
-        this.classify = res
-        this.defaultnum = res[0].id
-        this.headline = res[0].name
-        this.getClassGoods({
-          id: res[0].id
-        }).then((res) => {
-          console.log(res)
-          this.goods = res
-        })
-      })
-    },
+   ...mapActions({
+     getBannerList: 'banner/getBannerList',
+     getClassifyListAndGoods: 'classify/getClassifyListAndGoods',
+     getGoodsByClassifyId: 'goods/getGoodsByClassifyId'
+   }),
    handleClassify (item){
     console.log(item.id)
-    this.headline = item.name
-    this.getClassGoods({
+    this.headline = item.name;
+
+    this.getGoodsByClassifyId({
       id: item.id
     }).then((res) => {
       console.log(res)
@@ -158,7 +138,7 @@ Promise.all([this.togetBanner(),this.toClassifies()]).then((res) => {
      this.$router.push('/pages/member/index')
    }
  }
-  
+
 }
 </script>
 <style >
