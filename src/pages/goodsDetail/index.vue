@@ -21,9 +21,9 @@
       <div class="over">
         
         <div class="item" v-for="(item,index) in recommed" :key="index" @click="toDetails(item.id)">
-          <image class="item-img" mode="widthFix" :src="item.url" />
+          <image class="item-img" mode="widthFix" :src="item.image" />
           <div>{{item.name}}</div>
-          <div>{{item.title}}</div>
+          <div>{{item.describes}}</div>
         </div>
       </div>
       <div class="bottom">
@@ -35,6 +35,7 @@
   </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import wxParse from 'mpvue-wxparse'
 
 export default {
@@ -45,7 +46,8 @@ export default {
     return{
       article: '<div>htmllllllllllllllllllllllll</div>',
       detail: {
-        url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',
+        // url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',
+        url: '',
         name: 'the last supper',
         size: '60cm*60cm',
         markerPrice: '200',
@@ -56,10 +58,29 @@ export default {
         {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:0},
         {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:1},
         {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:2}
-      ]
+      ],
+      yemianid: ''
     }
   },
   methods: {
+    ...mapActions('goodsDetail', [
+     'getGoods'
+   ]),
+    toGetGooods (id) {
+      this.getGoods({
+        id: id
+      }).then((res) => {
+        console.log(res)
+        this.detail.url = res.image
+        this.detail.name = res.name
+        this.detail.size = res.longSize +'*' + res.wideSize
+        this.detail.markerPrice = res.marketPrice
+        this.detail.deposit  =res.depositPrice
+        this.detail.salesVolume =res.stock
+        this.article =res.details
+        this.recommed = res.classify
+      })
+    },
     preview(src, e) {
       // do something
     },
@@ -73,11 +94,62 @@ export default {
       this.$router.push('/pages/home/index')
     },
     rent() {
-      this.$router.push('/pages/myGallery/index')
+      let that =this
+      let yemianids = []
+      wx.getStorage({
+        key: 'id',
+        success (res) {
+          console.log(res)
+          if  (res.data) {
+            yemianids = res.data
+            for (let i in res.data) {
+              if (res.data[i] === that.yemianid) {
+                
+              }
+            }
+            yemianids.push(that.yemianid)
+            console.log('yes')
+            wx.setStorage({
+              key:"id",
+              data:yemianids
+            })
+          }
+        },
+        complete (res) {
+          console.log('comple')
+          console.log(res)
+          if (res.errMsg === 'getStorage:fail data not found') {
+            yemianids.push(that.yemianid)
+            wx.setStorage({
+              key:"id",
+              data:yemianids
+            })
+          }
+        }
+    })
+//     wx.getStorageInfo({
+//   success (res) {
+//     console.log(res)
+//     if(res.id) {
+//       console.log('yes')
+//     } else{
+  
+//     }
+//   }
+// })
+      
+      //  this.$router.push('/pages/myGallery/index')
     }
   },
   created() {
-
+    
+    // this.toGetGooods(this.$route.query.id)
+    
+  },
+  mounted(){
+    console.log(this.$route.query.id)
+    this.yemianid = this.$route.query.id
+    this.toGetGooods(this.$route.query.id)
   }
 }
 </script>

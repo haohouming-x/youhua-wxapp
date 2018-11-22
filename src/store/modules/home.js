@@ -13,9 +13,12 @@ const actions = {
     return Vue.$http('home.getClassifies', {data, method: 'get'})
   },
   getClassGoods ({commit}, data = {}) {
-    return Vue.$http(`home.getClassGoods`, {data, method: 'get'})
+    const {id, ...other} = data
+    console.log(id)
+    return Vue.$http(`home.getClassGoods@{id: ${id}}`, {other, method: 'get'})
   }
 }
+
 export default {
   namespaced: true,
   state,

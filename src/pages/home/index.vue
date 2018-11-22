@@ -6,7 +6,7 @@
         <div class=" memberbox" @click="beMember"></div>
       </div>
       <div class="classifybox">
-        <div class="classify-item" v-for="(item,index) in  classify" :key="index" @tap="handleClassify(item)">
+        <div class="classify-item" v-for="(item,index) in  classify" :key="index" @click="handleClassify(item)">
           <image class="classify-img"  :src="item.image" />
           <div class="font-size--24">{{item.name}}</div>
         </div>
@@ -15,10 +15,10 @@
         <div class="marleft">{{headline}}</div>
         <div class="goodsbox-outer">
           <div v-for="(item,index) in goods" :key="index" class="goods-item" @click="toDetails(item.id)">
-            <image mode="widthFix" class="good-item-img" :src="item.url" />
+            <image mode="widthFix" class="good-item-img" :src="item.image" />
             <div>{{item.name}}</div>
-            <div>{{item.title}}</div>
-            <div>{{item.size}}</div>
+            <div>{{item.describes}}</div>
+            <div>{{item.longSize}} * {{item.wideSize}}</div>
           </div>
         </div>
       </div>
@@ -61,12 +61,13 @@ export default {
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
       // ],
       classify: [],
-      goods: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
-      ],
-      headline: '推荐商城',
+      // goods: [
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
+      // ],
+      goods: [],
+      headline: '',
       footerData: [
         {
           name: "首页",
@@ -98,41 +99,52 @@ export default {
   },
  created () {
   //  this.getbanners()
-  this.getbanner({
-  }).then((res) => {
-    this.imgUrls = res
-    // console.log(this.imgUrls)
+  
+  
+ },
+ mounted () {
+Promise.all([this.togetBanner(),this.toClassifies()]).then((res) => {
+    console.log(res)
   })
-  this.getClassifies({}).then((res) => {
-    // console.log(res)
-    this.classify = res
-    this.defaultnum = res[0].id
-  })
-  this.getClassGoods({
-      id: this.defaultnum
-    }).then((res) => {
-      console.log(res)
-    })
  },
  methods: {
-  //  getbanners () {
-  //    let data = {
-  //      page: this.bannerpage
-  //    }
-  //    this.$http('home.getBanner', {data, method: 'get'}).then((res) => {
-  //     console.log(res)
-  //   }).catch((err) => {
-  //     console.log(err)
-  //   })
-  //  },
    ...mapActions('home', [
      'getbanner',
      'getClassifies',
      'getClassGoods'
    ]),
+    togetClassGoods () {
+      console.log(this.defaultnum)
+      this.getClassGoods({
+        id: this.defaultnum
+      }).then((res) => {
+        console.log(res)
+
+      })
+    },
+    togetBanner () {
+      this.getbanner({
+      }).then((res) => {
+        this.imgUrls = res
+      })
+    },
+    toClassifies () {
+      this.getClassifies({}).then((res) => {
+        // console.log(res)
+        this.classify = res
+        this.defaultnum = res[0].id
+        this.headline = res[0].name
+        this.getClassGoods({
+          id: res[0].id
+        }).then((res) => {
+          console.log(res)
+          this.goods = res
+        })
+      })
+    },
    handleClassify (item){
     console.log(item.id)
-    this.headline = item.title
+    this.headline = item.name
     this.getClassGoods({
       id: item.id
     }).then((res) => {
