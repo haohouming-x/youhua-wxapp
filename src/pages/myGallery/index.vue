@@ -24,20 +24,33 @@
   </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
       datalist: [
-        {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
-        {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
+        // {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
+        // {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
       ],
       total: '300'
     }
   },
   created () {
+    
+    },
+    mounted () {
+      wx.getStorage({
+        key: 'id',
+        success(res ) {
+          console.log(res)
 
+        }
+      })
     },
     methods: {
+       ...mapActions('myGallery', [
+     'getgoods'
+   ]),
       toHistoryPage() {
         this.$router.push('/pages/myGallery/historyRecord')
       },

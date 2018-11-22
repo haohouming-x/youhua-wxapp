@@ -102,23 +102,27 @@ export default {
           console.log(res)
           if  (res.data) {
             yemianids = res.data
-            for (let i in res.data) {
-              if (res.data[i] === that.yemianid) {
-                
-              }
-            }
-            yemianids.push(that.yemianid)
-            console.log('yes')
-            wx.setStorage({
-              key:"id",
-              data:yemianids
-            })
+            if(yemianids.indexOf(that.yemianid) !== -1 ) {
+              console.log('indexof')
+              wx.showToast({
+                title: '已租借',
+                icon: 'none',
+                duration: 2000
+              })
+            } else {
+
+                yemianids.push(that.yemianid)
+                console.log('yes')
+                wx.setStorage({
+                  key:"id",
+                  data:yemianids
+                })
+            }      
           }
         },
         complete (res) {
-          console.log('comple')
-          console.log(res)
           if (res.errMsg === 'getStorage:fail data not found') {
+            console.log('com')
             yemianids.push(that.yemianid)
             wx.setStorage({
               key:"id",
