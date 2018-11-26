@@ -14,6 +14,20 @@
         </div>
       </div>
     </div>
+    <div class="item" v-for="(item, index) in paygoods" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods.image" /></div>
+      <div class="dis-flex">
+        <div>
+          <div class="marbot">{{item.name}}</div>
+          <div>{{item.longSize}}*{{item.wideSize}}</div>
+        </div>
+        <div class="text-ri">
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
+          <text class="delete" v-if="item.status ==='AE'">删除</text>
+          <text class="return" v-if="item.status === 'RT'">退还</text>
+        </div>
+      </div>
+    </div>
     <div class="history" @click="toHistoryPage">查看历史记录></div>
     <div class="bottom">
       <div class="home" @click="toHomePage">首页</div>
