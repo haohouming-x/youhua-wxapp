@@ -48,6 +48,7 @@ const getters = {
 
 const actions = {
   getGoodsListByClassifyId ({commit, state}, data={page: 1}) {
+    // getGoodsByClassifyId ({commit, state}, data={page: 1}) {
     const {id, ...other} = data;
 
     return Vue.$http(`home.getClassGoods@{id: ${id}}`, {data: other, method: 'get'})

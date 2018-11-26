@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="item" v-for="(item, index) in datalist" :key="index">
+    <div class="item" v-for="(item, index) in orderlist" :key="index">
       <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.url" /></div>
       <div class="dis-flex">
         <div>
@@ -24,33 +24,48 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      datalist: [
-        // {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
-        // {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
-      ],
-      total: '300'
+      // datalist: [
+      //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
+      //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
+      // ],
+      total: '300',
+      coustomerid: 1
     }
   },
   created () {
     
     },
     mounted () {
+      let  that= this
       wx.getStorage({
         key: 'id',
         success(res ) {
-          console.log(res)
-
+          console.log(res.data)
+            that.getgoods({id: res.data}).then((res) => {
+              console.log(res)
+            })
         }
+      })
+      this.getorderlist({id:this.coustomerid,status:['WS','AS']}).then((res) => {
+        console.log(res)
+        
+      })
+    },
+    computed: {
+      ...mapGetters({
+        paygoods: 'myGallery/list',
+        orderlist: 'myGallery/orderlist'
       })
     },
     methods: {
-       ...mapActions('myGallery', [
-     'getgoods'
-   ]),
+       ...mapActions({
+         getgoods: 'myGallery/getgoods',
+         getorderlist: 'myGallery/getorderlist'
+       }),
       toHistoryPage() {
         this.$router.push('/pages/myGallery/historyRecord')
       },

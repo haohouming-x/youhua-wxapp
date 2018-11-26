@@ -37,8 +37,10 @@ const actions = {
   },
   getClassifyListAndGoods ({commit, dispatch}, data = {}, index = 0) {
     return dispatch('getClassifyList', data)
-      .then(v => dispatch('goods/getGoodsListByClassifyId', {id: 1, page: 1}, {root: true}));
-      // .then(v => dispatch('goods/getGoodsListByClassifyId', {id: v[index].id, page: 1}, {root: true}));
+      // .then(v => dispatch('goods/getGoodsListByClassifyId', {id: 1, page: 1}, {root: true}));
+      .then(v => dispatch('goods/getGoodsListByClassifyId', {id: v[index].id, page: 1}, {root: true}
+    
+    ));
   },
   // 没用噶（例子）
   // getCurrentGoodsList ({commit, dispatch}, data={}) {

@@ -1,19 +1,46 @@
 import Vue from 'vue'
+import {SET_PAY_GOODS, SET_ORDER} from '../types'
 const state = {
-  count: 0
+  list: [],
+  orderlist: []
 }
 const mutations = {
-
+  [SET_PAY_GOODS] (state, payload) {
+    state.list = payload.data
+  },
+  [SET_ORDER] (state, payload) {
+    state.orderlist = payload.data
+  }
+}
+const getters = {
+  list:state => state.list,
+  count: (state, {list}) => list.length,
+  orderlist: state => state.orderlist
 }
 const actions = {
-  getgoods ({commit}, data = {}) {
+  getgoods ({commit, state}, data = {}) {
     return Vue.$http('mygallery.goods', {data, method: 'get'})
+    .then(v => {
+      commit(SET_PAY_GOODS,{data: v})
+      return state.list
+    })
+  },
+  getorderlist ({commit, state}, data ={}) {
+    const {id, ...other} = data
+    return Vue.$http(`mygallery.order@{id: ${id}}`, {data :other,method: 'get'})
+    .then(v => {
+      commit(SET_ORDER, {data: v})
+      console.log(data)
+      return state.orderlist
+    })
+    console.log(data)
   }
 }
 
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

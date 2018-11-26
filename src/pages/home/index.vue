@@ -90,7 +90,8 @@ export default {
       selectedClassifyIndex: 0,
       bannerpage: 1,
       imgdata: [],
-      defaultnum: ''
+      defaultnum: '',
+      page: 1
     }
   },
   computed: {
@@ -119,15 +120,19 @@ export default {
    ...mapActions({
      getBannerList: 'banner/getBannerList',
      getClassifyListAndGoods: 'classify/getClassifyListAndGoods',
-     getGoodsByClassifyId: 'goods/getGoodsByClassifyId'
+    //  getGoodsByClassifyId: 'goods/getGoodsByClassifyId'
+    getGoodsListByClassifyId: 'goods/getGoodsListByClassifyId'
    }),
    handleClassify (item){
     console.log(item.id)
     this.headline = item.name;
 
-    this.getGoodsByClassifyId({
-      id: item.id
-    }).then((res) => {
+    // this.getGoodsByClassifyId({
+    //   id: item.id
+    // }).then((res) => {
+    //   console.log(res)
+    // })
+    this.getGoodsListByClassifyId({id: item.id,page: this.page}).then((res) => {
       console.log(res)
     })
    },
