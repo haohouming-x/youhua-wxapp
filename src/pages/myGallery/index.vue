@@ -1,16 +1,16 @@
 <template>
   <div class="wrap">
-    <div class="item" v-for="(item, index) in orderlist" :key="index">
-      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.url" /></div>
+    <div class="item" v-for="(item, index) in datalist" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods.image" /></div>
       <div class="dis-flex">
         <div>
           <div class="marbot">{{item.name}}</div>
-          <div>{{item.size}}</div>
+          <div>{{item.longSize}}*{{item.wideSize}}</div>
         </div>
         <div class="text-ri">
-          <div class="marbot"> 退还押金:<text class="item-amount">{{item.amount}}</text></div>
-          <text class="delete" v-if="!item.isreturen">删除</text>
-          <text class="return" v-else>退还</text>
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
+          <text class="delete" v-if="item.status ==='AE'">删除</text>
+          <text class="return" v-if="item.status === 'RT'">退还</text>
         </div>
       </div>
     </div>
@@ -33,7 +33,8 @@ export default {
       //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
       // ],
       total: '300',
-      coustomerid: 1
+      coustomerid: 1,
+      datalist: []
     }
   },
   created () {
@@ -46,13 +47,19 @@ export default {
         success(res ) {
           console.log(res.data)
             that.getgoods({id: res.data}).then((res) => {
-              console.log(res)
+              // console.log(res)
             })
         }
       })
       this.getorderlist({id:this.coustomerid,status:['WS','AS']}).then((res) => {
         console.log(res)
-        
+        res.forEach((value,index,arr) => {
+          // console.log(value)
+          value.orderBill.forEach((value,index,arr)=> {
+            this.datalist.push(value)
+          })
+        })
+        console.log(this.datalist)
       })
     },
     computed: {

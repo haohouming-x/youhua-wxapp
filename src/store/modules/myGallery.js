@@ -30,7 +30,7 @@ const actions = {
     return Vue.$http(`mygallery.order@{id: ${id}}`, {data :other,method: 'get'})
     .then(v => {
       commit(SET_ORDER, {data: v})
-      console.log(data)
+      // console.log(data)
       return state.orderlist
     })
     console.log(data)
