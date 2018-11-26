@@ -70,5 +70,11 @@ module.exports = [
     config: {
       navigationBarTitleText: '我的油画——结算页'
     }
+  },
+  {
+    path: '/pages/address/address',
+    config: {
+      navigationBarTitleText: '添加地址'
+    }
   }
 ]
