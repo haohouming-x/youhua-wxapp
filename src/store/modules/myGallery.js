@@ -15,7 +15,16 @@ const mutations = {
 const getters = {
   list:state => state.list,
   count: (state, {list}) => list.length,
-  orderlist: state => state.orderlist
+  orderlist: state => {
+    let datalist = [];    
+    state.orderlist && state.orderlist.forEach((value,index,arr)=> {
+      value.orderBill && value.orderBill.forEach((value,index,arr)=> {
+        datalist.push(value)
+      })
+    })
+    console.log(datalist)
+    return datalist;
+  }
 }
 const actions = {
   getgoods ({commit, state}, data = {}) {
@@ -30,7 +39,7 @@ const actions = {
     return Vue.$http(`mygallery.order@{id: ${id}}`, {data :other,method: 'get'})
     .then(v => {
       commit(SET_ORDER, {data: v})
-      // console.log(data)
+      console.log(state.orderlist)
       return state.orderlist
     })
     console.log(data)

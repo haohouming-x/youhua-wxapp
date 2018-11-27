@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
-    <div class="item" v-for="(item, index) in datalist" :key="index">
-      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods.image" /></div>
+    <div class="item" v-for="(item, index) in paygoods" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods ? item.goods.image : ''  " /></div>
       <div class="dis-flex">
         <div>
           <div class="marbot">{{item.name}}</div>
@@ -14,8 +14,8 @@
         </div>
       </div>
     </div>
-    <div class="item" v-for="(item, index) in paygoods" :key="index">
-      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods.image" /></div>
+    <div class="item" v-for="(item, index) in orderlist" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods ? item.goods.image : ''" /></div>
       <div class="dis-flex">
         <div>
           <div class="marbot">{{item.name}}</div>
@@ -39,7 +39,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-export default {
+export default {  
   data () {
     return {
       // datalist: [
@@ -65,16 +65,7 @@ export default {
             })
         }
       })
-      this.getorderlist({id:this.coustomerid,status:['WS','AS']}).then((res) => {
-        console.log(res)
-        res.forEach((value,index,arr) => {
-          // console.log(value)
-          value.orderBill.forEach((value,index,arr)=> {
-            this.datalist.push(value)
-          })
-        })
-        console.log(this.datalist)
-      })
+      this.getorderlist({id:this.coustomerid,status:['WS','AS']});
     },
     computed: {
       ...mapGetters({
