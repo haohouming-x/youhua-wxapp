@@ -3,12 +3,12 @@
     <ul class="address_list">
       <li>
         <label for="">收件人姓名</label>
-        <input type="text" placeholder="请填写">
+        <input type="text" placeholder="请填写" :value="name">
       </li>
       <li>
         <label for="">电话号码</label>
-        <input type="tel" placeholder="请填写" class="middle">
-        <div class="send_btn">获取验证码</div>
+        <input type="tel" placeholder="请填写" class="middle" :value="contact">
+        <div class="send_btn" @click="getCode">{{ countDown }}</div>
       </li>
       <li>
         <label for="">验证码</label>
@@ -24,28 +24,65 @@
       </li>
       <li>
         <label for="">详细地址</label>
-        <input type="text" placeholder="请填写">
+        <input type="text" placeholder="请填写" >
       </li>
     </ul>
+
+    <div class="submit_outer">
+      <div class="submit_btn">确定</div>
+    </div>
   </div>
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
   export default {
     data() {
       return {
         region: ['广东省','广州市','海珠区'],
-        customItem: '全部'
+        customItem: '全部',
+        canGet: true,
+        countDown: '获取验证码'
       }
+    },
+    computed: {
+      ...mapGetters({
+        userInfo: 'userInfo/userInfo',
+        userAddress: 'address/userAddress',
+      }),
     },
     mounted() {
       
     },
     methods: {
-      change: function (e) {
+      change(e) {
         console.log('picker发送选择改变，携带值为',  e.mp.detail.value)
         // this.region = e.detail.value
-      }
+      },
+      getCode() {
+        if (this.canGet) {
+          var that = this;
+          that.canGet = false;
+          that.countDown = 5;
+          var timer = setInterval(function() {
+            that.countDown = that.countDown - 1;
+            if (that.countDown <= 0) {
+              clearInterval(timer);
+              timer = null;
+              that.countDown = "重新获取";
+              that.canGet = true;
+            }
+          },1000)
+        }
+      },
+      submitAddress() {
+        // this.newAddress({
+
+        // })
+      },
+      ...mapActions({
+        newAddress: 'address/newAddress'
+      }),
     }
   }
 </script>
@@ -106,5 +143,21 @@
     font-size: 28rpx;
     display: inline-block;
     vertical-align: middle;
+  }
+
+  .submit_outer {
+    height: 80rpx;
+  }
+
+  .submit_btn {
+    width: 100%;
+    height: 80rpx;
+    line-height: 80rpx;
+    text-align: center;
+    color: #fff;
+    background-color: coral;
+    position: fixed;
+    bottom: 0;
+    left: 0;
   }
 </style>

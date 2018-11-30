@@ -27,6 +27,7 @@
 
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import carouselFigure from '@/components/carouselFigure'
 import normalFooter from '@/components/normalFooter'
 export default {
@@ -85,20 +86,44 @@ export default {
       ]
     }
   },
- created () {},
- methods: {
-   handleClassify (item){
-    console.log(item)
-    this.headline = item.title
-   },
-   toDetails(id) {
+  computed: {
+    ...mapGetters({
+      userInfo: 'userInfo/userInfo',
+      isNew: 'userInfo/isNew'
+    }),
+  },
+  created () {},
+  mounted () {
+    this.userLogin().then(v => {
+     if(this.isNew) {
+        this.$router.push({path: '/pages/home/login'});
+        // shouquan().then(v => {
+        //      const sex = v.xxx;
+        //      const nickName = v.xxxx;
+        //      this.changeUserInfo({}, {sex, nickName})
+        //   });
+      }
+    });
+    // this.changeUserInfo({}, this.userInfo)
+    // console.log(this.userInfo);
+  },
+  methods: {
+    handleClassify (item){
+      this.headline = item.title
+    },
+    // shouquan() {
+      
+    // },
+    toDetails(id) {
     this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
-   },
-   beMember() {
-     this.$router.push('/pages/member/index')
-   }
- }
-  
+    },
+    beMember() {
+      this.$router.push('/pages/member/index')
+    },
+    ...mapActions({
+      userLogin: 'userInfo/userLogin'
+    }),
+  }
 }
 </script>
 <style >

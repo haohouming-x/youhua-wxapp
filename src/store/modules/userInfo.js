@@ -32,9 +32,10 @@ const actions = {
             });
         })
     },
-    changeUserInfo({commit,state}, data={}) {
+    changeUserInfo({commit, state}, data={}) {
         return Vue.$http(`globalUrl.getConsumer@{id:${data.id}}`, {data, method: 'put'})
             .then(v => {
+                // console.log(v);
                 let {image, sex, nickName} = v;
 
                 commit(SET_USER_INFO, {data: {
@@ -45,11 +46,10 @@ const actions = {
                 return state.userInfo;
             })
     },
-    userLogin ({dispath, commit,state}, data = {}) {
-        return dispath('wxLogin')
+    userLogin ({dispatch, commit, state}, data = {}) {
+        return dispatch('wxLogin')
             // 用户后台登录
             .then(v => {
-                console.log(v);
                 let data = {
                     code: v
                 };
@@ -57,9 +57,17 @@ const actions = {
             })
             // 保存用户信息
             .then(v => {
-                console.log(v);
                 commit(SET_USER_INFO, {data: v});
+                // console.log()
                 return state.userInfo;
             })
     }
+}
+
+export default {
+    namespaced: true,
+    state,
+    getters,
+    mutations,
+    actions
 }

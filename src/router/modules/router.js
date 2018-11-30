@@ -76,5 +76,11 @@ module.exports = [
     config: {
       navigationBarTitleText: '添加地址'
     }
+  },
+  {
+    path: '/pages/home/login',
+    config: {
+      navigationBarTitleText: '用户授权'
+    }
   }
 ]
