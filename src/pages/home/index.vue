@@ -96,32 +96,47 @@ export default {
   },
   computed: {
     ...mapGetters({
+      userInfo: 'userInfo/userInfo',
+      isNew: 'userInfo/isNew',
       banners: 'banner/list',
       classifies: 'classify/list',
       goods: 'goods/currentList'
     }),
-    imgUrls() {
-      return this.banners.map(v => ({url: v.image}))
-    }
   },
- created () {
-  //  this.getbanners()
-
-
- },
- mounted () {
+  created () {},
+  mounted () {
+    this.userLogin().then(v => {
+     if(this.isNew) {
+        this.$router.push({path: '/pages/home/login'});
+        // shouquan().then(v => {
+        //      const sex = v.xxx;
+        //      const nickName = v.xxxx;
+        //      this.changeUserInfo({}, {sex, nickName})
+        //   });
+      }
+    });
     this.getBannerList();
     this.getClassifyListAndGoods({}, this.selectedClassifyIndex)
         .then(v => {
             this.headline = this.classifies[0].name
         });
+    // this.changeUserInfo({}, this.userInfo)
+    // console.log(this.userInfo);
+  },
+
+ created () {
+  //  this.getbanners()
+
+
  },
+
  methods: {
    ...mapActions({
      getBannerList: 'banner/getBannerList',
      getClassifyListAndGoods: 'classify/getClassifyListAndGoods',
     //  getGoodsByClassifyId: 'goods/getGoodsByClassifyId'
-    getGoodsListByClassifyId: 'goods/getGoodsListByClassifyId'
+    getGoodsListByClassifyId: 'goods/getGoodsListByClassifyId',
+      userLogin: 'userInfo/userLogin'
    }),
    handleClassify (item){
     console.log(item.id)
@@ -141,7 +156,19 @@ export default {
    },
    beMember() {
      this.$router.push('/pages/member/index')
-   }
+   },
+   handleClassify (item){
+      this.headline = item.title
+    },
+    toDetails(id) {
+    this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
+    },
+    beMember() {
+      this.$router.push('/pages/member/index')
+    },
+    imgUrls() {
+      return this.banners.map(v => ({url: v.image}))
+    }
  }
 
 }
