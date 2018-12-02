@@ -5,11 +5,11 @@
         <div class="info_box">
           <div class="info-box_top">
             <label>收件人：</label>
-            <span>{{ userName }}</span><span>{{ userNumber }}</span>
+            <span>{{ userAddress.name }}</span><span>{{ userAddress.contact }}</span>
           </div>
           <div class="info-box_bottom">
             <label>收件地址：</label>
-            <span>{{ userAddress }}</span>
+            <span>{{ userAddress.provice }}{{ userAddress.city }}{{ userAddress.district }}{{ userAddress.detailedAddress }}</span>
           </div>
         </div>
       </div>
@@ -42,19 +42,19 @@
               <p class="clr_text">随时可退</p>
             </div>
           </div>
-          <div class="inner_ri">付款</div>
+          <div class="inner_ri" @click="payNow">付款</div>
         </div>
       </div>
     </div>
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
   export default {
     data() {
       return {
-        userName: "王霞",
-        userNumber: "12321342121",
-        userAddress: "广东省广州市荔湾区",
+        address: {},
+        // userAddress: "广东省广州市荔湾区",
         orderList: [
           {
             name: "油画名称",
@@ -70,10 +70,57 @@
         ]
       }
     },
+    computed: {
+      ...mapGetters({
+        userInfo: 'userInfo/userInfo',
+        userAddress: 'payPage/userAddress',
+      }),
+    },
+    mounted() {
+      let id = this.userInfo.id == undefined ? 10010 : this.userInfo.id;
+      this.getAddress({id}).then(v => {
+        // console.log(this.userAddress);
+        if (this.userAddress == "") {
+          wx.showModal({
+            title: '提示',
+            content: '您还没有设置地址',
+            confirmText: '立即设置',
+            success: res => {
+              if (res.confirm) {
+                this.$router.push({path: '/pages/address/address'});
+              } else if (res.cancel) {
+                // console.log('用户点击取消')
+              }
+            }
+          })
+        }
+      });
+    },
     methods: {
       toHomePage() {
         this.$router.push('/pages/home/index')
-      }
+      },
+      payNow() {
+        if (this.userAddress == "") {
+          wx.showModal({
+            title: '提示',
+            content: '您还没有设置地址',
+            confirmText: '立即设置',
+            success: res => {
+              if (res.confirm) {
+                this.$router.push({path: '/pages/address/address'});
+              } else if (res.cancel) {
+                // console.log('用户点击取消')
+              }
+            }
+          })
+        } else {
+          // 支付TODO
+        }
+      },
+      ...mapActions({
+        getAddress: 'payPage/getAddress'
+      }),
     }
   }
 </script>

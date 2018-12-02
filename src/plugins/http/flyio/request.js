@@ -26,7 +26,7 @@ const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
 
     let _url = API[enumName] || '';
 
-    _url = params ? _url.replace(/\{([^{}]+)\}/g, (_, key) => params.match(key + "( ?):( ?)(.?)")[3]) : _url;
+    _url = params ? _url.replace(/\{([^{}]+)\}/g, (_, key) => params.match(key + "( ?):( ?)(.*)[( ?)}|,]")[3]) : _url;
 
     _url = Config.host + _url;
 

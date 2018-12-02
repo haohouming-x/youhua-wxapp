@@ -7,13 +7,14 @@
       </li>
       <li>
         <label for="">电话号码</label>
-        <input type="tel" placeholder="请填写" class="middle" :value="contact">
-        <div class="send_btn" @click="getCode">{{ countDown }}</div>
+        <input type="tel" placeholder="请填写" :value="contact">
+        <!-- <input type="tel" placeholder="请填写" class="middle" :value="contact"> -->
+        <!-- <div class="send_btn" @click="getCode">{{ countDown }}</div> -->
       </li>
-      <li>
+      <!-- <li>
         <label for="">验证码</label>
         <input type="text" placeholder="请填写">
-      </li>
+      </li> -->
       <li>
         <label for="">所在城市</label>
         <picker mode="region" @change="change" :value="region" class="r_picker">
@@ -24,12 +25,16 @@
       </li>
       <li>
         <label for="">详细地址</label>
-        <input type="text" placeholder="请填写" >
+        <input type="text" placeholder="请填写" :value="detailedAddress">
+      </li>
+      <li>
+        <label for="">备注</label>
+        <input type="text" placeholder="请填写" :value="remark">
       </li>
     </ul>
 
     <div class="submit_outer">
-      <div class="submit_btn">确定</div>
+      <div class="submit_btn" @click="submitAddress">确定</div>
     </div>
   </div>
 </template>
@@ -42,7 +47,16 @@
         region: ['广东省','广州市','海珠区'],
         customItem: '全部',
         canGet: true,
-        countDown: '获取验证码'
+        countDown: '获取验证码',
+        addressInfo: {
+          name: '',
+          contact: '',
+          province: '',
+          city: '',
+          district: '',
+          detailedAddress: '',
+          remark: '',
+        }
       }
     },
     computed: {
@@ -56,15 +70,18 @@
     },
     methods: {
       change(e) {
-        console.log('picker发送选择改变，携带值为',  e.mp.detail.value)
-        // this.region = e.detail.value
+        this.region = e.mp.detail.value;
+        this.addressInfo.province = this.region[0];
+        this.addressInfo.city = this.region[1];
+        this.addressInfo.district = this.region[2];
       },
       getCode() {
+        this.canGet = this.contact === '' ? false : true;
         if (this.canGet) {
           var that = this;
           that.canGet = false;
           that.countDown = 5;
-          var timer = setInterval(function() {
+          var timer = setInterval(() => {
             that.countDown = that.countDown - 1;
             if (that.countDown <= 0) {
               clearInterval(timer);
@@ -75,10 +92,33 @@
           },1000)
         }
       },
-      submitAddress() {
-        // this.newAddress({
-
-        // })
+      submitAddress() { // 提交
+        let addressInfo = this.addressInfo;
+        let id = this.userInfo.id;
+        if (addressInfo.name == '') {
+          wx.showToast({
+            title: '请输入名称',
+            icon: 'none',
+            duration: 1500
+          })
+        } else if (addressInfo.contact == '') {
+          wx.showToast({
+            title: '请输入手机号码',
+            icon: 'none',
+            duration: 1500
+          })
+        } else if (addressInfo.detailedAddress == '') {
+          wx.showToast({
+            title: '请输入详细地址',
+            icon: 'none',
+            duration: 1500
+          })
+        } else {
+          this.newAddress({
+            id,
+            addressInfo
+          })
+        }
       },
       ...mapActions({
         newAddress: 'address/newAddress'
@@ -131,7 +171,7 @@
     vertical-align: middle;
     font-size: 24rpx;
     color: #fff;
-    background-color: coral;
+    background-color: #f7bf64;
     border-radius: 60rpx;
   }
   
@@ -146,16 +186,16 @@
   }
 
   .submit_outer {
-    height: 80rpx;
+    height: 100rpx;
   }
 
   .submit_btn {
     width: 100%;
-    height: 80rpx;
-    line-height: 80rpx;
+    height: 100rpx;
+    line-height: 100rpx;
     text-align: center;
     color: #fff;
-    background-color: coral;
+    background-color: #f7bf64;
     position: fixed;
     bottom: 0;
     left: 0;

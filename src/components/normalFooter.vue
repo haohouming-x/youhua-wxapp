@@ -21,9 +21,9 @@
         if (id == 0 && status == true) {
           this.$router.push('/pages/home/index')
         } else if (id == 1 && status == true) {
-          this.$router.push('/pages/commonRule/commonRule')
-        } else if (id == 2 && status == true) {
           this.$router.push('/pages/myGallery/index')
+        } else if (id == 2 && status == true) {
+          this.$router.push('/pages/commonRule/commonRule')
         } else if (id == 3 && status == true) {
           this.$router.push('/pages/guide/index')
         }

@@ -1,20 +1,12 @@
 import Vue from 'vue'
-import { ADD_ADDRESS } from '../types'
+import { GET_PAY_INFO } from '../types'
 
 const state = {
-    userAddress: {
-        name: '',
-        contact: '',
-        province: '',
-        city: '',
-        district: '',
-        remark: '',
-        detailAddress: '',
-    }
+    userAddress: {}
 }
 
 const mutations = {
-    [ADD_ADDRESS] (state, payload) {
+    [GET_PAY_INFO] (state,payload) {
         state.userAddress = payload.data;
     }
 }
@@ -24,12 +16,12 @@ const getters = {
 }
 
 const actions = {
-    newAddress({commit, state}, data={}) {
-        return Vue.$http(`globalUrl.newConsumer@{id:${data.id}}`, {data, method: 'post'})
+    getAddress({commit, state}, data={}) {
+        return Vue.$http(`payUrl.getAddress@{id:${data.id}}`, {method: 'get'})
             .then(v => {
                 if (!!v) {
                     let address = v;
-                    commit(ADD_ADDRESS, {data: address});
+                    commit(GET_PAY_INFO, {data: address})
                     return state.userAddress;
                 }
             })
