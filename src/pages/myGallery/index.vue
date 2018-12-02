@@ -46,7 +46,7 @@ export default {
       //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
       //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
       // ],
-      total: '300',
+      total: 0,
       coustomerid: 1,
       datalist: []
     }
@@ -56,16 +56,42 @@ export default {
     },
     mounted () {
       let  that= this
+      let total =0
+      let ortotal=0
       wx.getStorage({
         key: 'id',
         success(res ) {
-          console.log(res.data)
+          // console.log(res.data)
             that.getgoods({id: res.data}).then((res) => {
               // console.log(res)
+              res.forEach((value,index,arr) => {
+                // console.log(res[index]['console.log(that.total)'])
+                total += value['depositPrice']  
+              })
+              console.log(total)
+              that.total =total
             })
+            
         }
       })
-      this.getorderlist({id:this.coustomerid,status:['WS','AS']});
+      this.getorderlist({id:this.coustomerid,status:['WS','AS']}).then((res)=> {
+        // console.log(res)
+        res.forEach((value,index,arr)=> {
+          // console.log(value.status)
+          if(value.status&& value.status==='AE'){
+            ortotal +=value['depositPrice']
+          }
+          if (value.status&&value.status ==='RT') {
+            ortotal -= value['depositPrice']
+          }
+          
+        })
+        console.log('订单：' + ortotal)
+        console.log('第一次：' +that.total)
+        that.total += ortotal
+        console.log('第二次+：' +that.total)
+      })
+
     },
     computed: {
       ...mapGetters({

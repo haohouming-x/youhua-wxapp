@@ -22,7 +22,7 @@ const getters = {
         datalist.push(value)
       })
     })
-    console.log(datalist)
+    // console.log(datalist)
     return datalist;
   }
 }
@@ -39,7 +39,7 @@ const actions = {
     return Vue.$http(`mygallery.order@{id: ${id}}`, {data :other,method: 'get'})
     .then(v => {
       commit(SET_ORDER, {data: v})
-      console.log(state.orderlist)
+      // console.log(state.orderlist)
       return state.orderlist
     })
     console.log(data)
