@@ -32,7 +32,8 @@ const actions = {
             });
         })
     },
-    changeUserInfo({commit, state}, data={}) {
+  changeUserInfo({commit, state}, data={}) {
+    console.log(data);
         return Vue.$http(`globalUrl.getConsumer@{id:${data.id}}`, {data, method: 'put'})
             .then(v => {
                 // console.log(v);
@@ -53,7 +54,7 @@ const actions = {
                 let data = {
                     code: v
                 };
-                return Vue.$http('globalUrl.login', {data, method: 'post'})
+                return Vue.$http('globalUrl.login', {data, method: 'get'})
             })
             // 保存用户信息
             .then(v => {

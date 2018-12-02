@@ -106,7 +106,7 @@ export default {
   created () {},
   mounted () {
     this.userLogin().then(v => {
-     if(this.isNew) {
+      if(this.isNew) {
         this.$router.push({path: '/pages/home/login'});
         // shouquan().then(v => {
         //      const sex = v.xxx;

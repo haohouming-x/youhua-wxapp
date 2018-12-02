@@ -14,7 +14,7 @@
     data() {
       return {
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
-        // userHead: 
+        // userHead:
       }
     },
     computed: {
@@ -32,7 +32,7 @@
           if (res.authSetting['scope.userInfo']) {
             // 已经授权，可以直接调用 getUserInfo 获取头像昵称
             wx.getUserInfo({
-              success: function(res) {
+              success: (res) => {
                 console.log(res.userInfo);
               }
             })
@@ -52,13 +52,15 @@
         changeUserInfo: 'userInfo/changeUserInfo'
       }),
       bindGetUserInfo (e) {
-        // console.log(e.mp);
-        const {nickName, avatarUrl: image, gender} = e.mp;
+        //console.log(e);
+        const {nickName, avatarUrl: image, gender} = e.mp.detail.userInfo;
         const sex = gender === 1 ? 'nan' : 'nv';
         const id = this.userInfo.id;
 
         this.changeUserInfo({
           id, nickName, image, sex
+        }).then(v => {
+          this.$router.push({path: '/pages/home/index'});
         })
       }
     }
@@ -88,4 +90,3 @@
     background-color: green;
   }
 </style>
-
