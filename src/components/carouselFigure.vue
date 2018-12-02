@@ -10,7 +10,9 @@
       <block v-for="(item, index) in swiperImgs" :key="index">
         <swiper-item>
           <!-- <view class="slide-image" style="background-image: url('{{item}}')"></view> -->
-           <image :src="item.url" class="slide-image" />
+          
+            <image :src="item.link" class="slide-image" @click="handleTap(item)"/>
+        
         </swiper-item>
       </block>
     </swiper>
@@ -35,7 +37,10 @@
       swiperChange (e) {
         let index = e.mp.detail.current
         this.current = index
-        // console.log(this.current)
+        // console.log(e)
+      },
+      handleTap (item) {
+        console.log(item)
       }
     }
 

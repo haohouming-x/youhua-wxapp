@@ -1,24 +1,24 @@
 <template>
-      
+
     <div>
       <carousel-figure :option="swiperOption" :swiperImgs="imgUrls"></carousel-figure>
       <div v-if="!isMember">
         <div class=" memberbox" @click="beMember"></div>
       </div>
       <div class="classifybox">
-        <div class="classify-item" v-for="(item,index) in  classify" :key="index" @tap="handleClassify(item)">
-          <image class="classify-img"  :src="item.url" />
-          <div class="font-size--24">{{item.title}}</div>
+        <div class="classify-item" v-for="(item,index) in  classifies" :key="index" @click="handleClassify(item)">
+          <image class="classify-img"  :src="item.image" />
+          <div class="font-size--24">{{item.name}}</div>
         </div>
       </div>
       <div class="goodsbox">
         <div class="marleft">{{headline}}</div>
         <div class="goodsbox-outer">
           <div v-for="(item,index) in goods" :key="index" class="goods-item" @click="toDetails(item.id)">
-            <image mode="widthFix" class="good-item-img" :src="item.url" />
+            <image mode="widthFix" class="good-item-img" :src="item.image" />
             <div>{{item.name}}</div>
-            <div>{{item.title}}</div>
-            <div>{{item.size}}</div>
+            <div>{{item.describes}}</div>
+            <div>{{item.longSize}} * {{item.wideSize}}</div>
           </div>
         </div>
       </div>
@@ -45,26 +45,29 @@ export default {
         indicatorDots: true
       },
       isMember: false,
-      imgUrls: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"}
-      ],
-      classify: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "推荐商城"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "收藏"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
-      ],
-      goods: [
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
-        {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
-      ],
-      headline: '推荐商城',
+      // imgUrls: [
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"}
+      // ],
+      // imgUrls: [],
+      // classify: [
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "推荐商城"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "收藏"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", title: "肖像画"}
+      // ],
+      // classify: [],
+      // goods: [
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 0},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 1},
+      //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: "thelastsupper", title:"最后的晚餐", size:"20*30cm", id: 2}
+      // ],
+      // goods: [],
+      headline: '',
       footerData: [
         {
           name: "首页",
@@ -83,47 +86,64 @@ export default {
           clickStatus: true,
           id: 3
         }
-      ]
+      ],
+      selectedClassifyIndex: 0,
+      bannerpage: 1,
+      imgdata: [],
+      defaultnum: '',
+      page: 1
     }
   },
   computed: {
     ...mapGetters({
-      userInfo: 'userInfo/userInfo',
-      isNew: 'userInfo/isNew'
+      banners: 'banner/list',
+      classifies: 'classify/list',
+      goods: 'goods/currentList'
     }),
+    imgUrls() {
+      return this.banners.map(v => ({url: v.image}))
+    }
   },
-  created () {},
-  mounted () {
-    this.userLogin().then(v => {
-     if(this.isNew) {
-        this.$router.push({path: '/pages/home/login'});
-        // shouquan().then(v => {
-        //      const sex = v.xxx;
-        //      const nickName = v.xxxx;
-        //      this.changeUserInfo({}, {sex, nickName})
-        //   });
-      }
-    });
-    // this.changeUserInfo({}, this.userInfo)
-    // console.log(this.userInfo);
-  },
-  methods: {
-    handleClassify (item){
-      this.headline = item.title
-    },
-    // shouquan() {
-      
-    // },
-    toDetails(id) {
+ created () {
+  //  this.getbanners()
+
+
+ },
+ mounted () {
+    this.getBannerList();
+    this.getClassifyListAndGoods({}, this.selectedClassifyIndex)
+        .then(v => {
+            this.headline = this.classifies[0].name
+        });
+ },
+ methods: {
+   ...mapActions({
+     getBannerList: 'banner/getBannerList',
+     getClassifyListAndGoods: 'classify/getClassifyListAndGoods',
+    //  getGoodsByClassifyId: 'goods/getGoodsByClassifyId'
+    getGoodsListByClassifyId: 'goods/getGoodsListByClassifyId'
+   }),
+   handleClassify (item){
+    console.log(item.id)
+    this.headline = item.name;
+
+    // this.getGoodsByClassifyId({
+    //   id: item.id
+    // }).then((res) => {
+    //   console.log(res)
+    // })
+    this.getGoodsListByClassifyId({id: item.id,page: this.page}).then((res) => {
+      console.log(res)
+    })
+   },
+   toDetails(id) {
     this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
-    },
-    beMember() {
-      this.$router.push('/pages/member/index')
-    },
-    ...mapActions({
-      userLogin: 'userInfo/userLogin'
-    }),
-  }
+   },
+   beMember() {
+     this.$router.push('/pages/member/index')
+   }
+ }
+
 }
 </script>
 <style >

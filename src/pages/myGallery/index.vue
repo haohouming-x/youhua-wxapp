@@ -1,16 +1,30 @@
 <template>
   <div class="wrap">
-    <div class="item" v-for="(item, index) in datalist" :key="index">
-      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.url" /></div>
+    <div class="item" v-for="(item, index) in paygoods" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods ? item.goods.image : ''  " /></div>
       <div class="dis-flex">
         <div>
           <div class="marbot">{{item.name}}</div>
-          <div>{{item.size}}</div>
+          <div>{{item.longSize}}*{{item.wideSize}}</div>
         </div>
         <div class="text-ri">
-          <div class="marbot"> 退还押金:<text class="item-amount">{{item.amount}}</text></div>
-          <text class="delete" v-if="!item.isreturen">删除</text>
-          <text class="return" v-else>退还</text>
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
+          <text class="delete" v-if="item.status ==='AE'">删除</text>
+          <text class="return" v-if="item.status === 'RT'">退还</text>
+        </div>
+      </div>
+    </div>
+    <div class="item" v-for="(item, index) in orderlist" :key="index">
+      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods ? item.goods.image : ''" /></div>
+      <div class="dis-flex">
+        <div>
+          <div class="marbot">{{item.name}}</div>
+          <div>{{item.longSize}}*{{item.wideSize}}</div>
+        </div>
+        <div class="text-ri">
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
+          <text class="delete" v-if="item.status ==='AE'">删除</text>
+          <text class="return" v-if="item.status === 'RT'">退还</text>
         </div>
       </div>
     </div>
@@ -24,20 +38,72 @@
   </div>
 </template>
 <script>
-export default {
+import { mapGetters, mapActions } from 'vuex'
+export default {  
   data () {
     return {
-      datalist: [
-        {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
-        {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
-      ],
-      total: '300'
+      // datalist: [
+      //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturn: 'true' },
+      //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
+      // ],
+      total: 0,
+      coustomerid: 1,
+      datalist: []
     }
   },
   created () {
+    
+    },
+    mounted () {
+      let  that= this
+      let total =0
+      let ortotal=0
+      wx.getStorage({
+        key: 'id',
+        success(res ) {
+          // console.log(res.data)
+            that.getgoods({id: res.data}).then((res) => {
+              // console.log(res)
+              res.forEach((value,index,arr) => {
+                // console.log(res[index]['console.log(that.total)'])
+                total += value['depositPrice']  
+              })
+              console.log(total)
+              that.total =total
+            })
+            
+        }
+      })
+      this.getorderlist({id:this.coustomerid,status:['WS','AS']}).then((res)=> {
+        // console.log(res)
+        res.forEach((value,index,arr)=> {
+          // console.log(value.status)
+          if(value.status&& value.status==='AE'){
+            ortotal +=value['depositPrice']
+          }
+          if (value.status&&value.status ==='RT') {
+            ortotal -= value['depositPrice']
+          }
+          
+        })
+        console.log('订单：' + ortotal)
+        console.log('第一次：' +that.total)
+        that.total += ortotal
+        console.log('第二次+：' +that.total)
+      })
 
     },
+    computed: {
+      ...mapGetters({
+        paygoods: 'myGallery/list',
+        orderlist: 'myGallery/orderlist'
+      })
+    },
     methods: {
+       ...mapActions({
+         getgoods: 'myGallery/getgoods',
+         getorderlist: 'myGallery/getorderlist'
+       }),
       toHistoryPage() {
         this.$router.push('/pages/myGallery/historyRecord')
       },
