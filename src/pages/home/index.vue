@@ -1,13 +1,13 @@
 <template>
 
     <div>
-      <carousel-figure :option="swiperOption" :swiperImgs="imgUrls"></carousel-figure>
+      <carousel-figure :swiperImgs="imgUrls"></carousel-figure>
       <div v-if="!isMember">
         <div class=" memberbox" @click="beMember"></div>
       </div>
       <div class="classifybox">
         <div class="classify-item" v-for="(item,index) in  classifies" :key="index" @click="handleClassify(item)">
-          <image class="classify-img"  :src="item.image" />
+          <remote-image className="classify-img" :src="item.image" />
           <div class="font-size--24">{{item.name}}</div>
         </div>
       </div>
@@ -15,7 +15,7 @@
         <div class="marleft">{{headline}}</div>
         <div class="goodsbox-outer">
           <div v-for="(item,index) in goods" :key="index" class="goods-item" @click="toDetails(item.id)">
-            <image mode="widthFix" class="good-item-img" :src="item.image" />
+            <remote-image mode="widthFix" className="good-item-img" :src="item.image" />
             <div>{{item.name}}</div>
             <div>{{item.describes}}</div>
             <div>{{item.longSize}} * {{item.wideSize}}</div>
@@ -30,20 +30,17 @@
 import { mapGetters, mapActions } from 'vuex'
 import carouselFigure from '@/components/carouselFigure'
 import normalFooter from '@/components/normalFooter'
+import remoteImage from '@/components/remoteImage'
+import config from '@/plugins/http/flyio/config'
+
 export default {
   components: {
     carouselFigure,
-    normalFooter
+    normalFooter,
+    remoteImage
   },
   data () {
     return {
-      swiperOption: {
-        autoplay: true,
-        interval: 3000,
-        duration: 500,
-        circular: true,
-        indicatorDots: true
-      },
       isMember: false,
       // imgUrls: [
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
@@ -102,6 +99,9 @@ export default {
       classifies: 'classify/list',
       goods: 'goods/currentList'
     }),
+    imgUrls() {
+      return this.banners.map(v => ({url: v.image, title: v.name}))
+    }
   },
   created () {},
   mounted () {
@@ -118,7 +118,7 @@ export default {
     this.getBannerList();
     this.getClassifyListAndGoods({}, this.selectedClassifyIndex)
         .then(v => {
-            this.headline = this.classifies[0].name
+            if(this.classifies.length > 0) this.headline = this.classifies[0].name;
         });
     // this.changeUserInfo({}, this.userInfo)
     // console.log(this.userInfo);
@@ -139,7 +139,6 @@ export default {
       userLogin: 'userInfo/userLogin'
    }),
    handleClassify (item){
-    console.log(item.id)
     this.headline = item.name;
 
     // this.getGoodsByClassifyId({
@@ -147,9 +146,7 @@ export default {
     // }).then((res) => {
     //   console.log(res)
     // })
-    this.getGoodsListByClassifyId({id: item.id,page: this.page}).then((res) => {
-      console.log(res)
-    })
+    this.getGoodsListByClassifyId({id: item.id,page: this.page})
    },
    toDetails(id) {
     this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
@@ -165,9 +162,6 @@ export default {
     },
     beMember() {
       this.$router.push('/pages/member/index')
-    },
-    imgUrls() {
-      return this.banners.map(v => ({url: v.image}))
     }
  }
 

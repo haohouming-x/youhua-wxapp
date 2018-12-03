@@ -1,7 +1,9 @@
 <template>
   <div>
     <div>
-      <div class="headbox"><img class="head-img" mode="widthFix" :src="detail.url" alt=""></div>
+      <div class="headbox">
+        <carousel-figure :swiperImgs="imgUrls"></carousel-figure>
+      </div>
       <div class="dis-flex">
         <div>
           <div>{{detail.name}}</div>
@@ -19,9 +21,9 @@
       <wxParse :content="article" @preview="preview" @navigate="navigate" />
       <div class="marleft">同类油画推荐</div>
       <div class="over">
-        
+
         <div class="item" v-for="(item,index) in recommed" :key="index" @click="toDetails(item.id)">
-          <image class="item-img" mode="widthFix" :src="item.image" />
+          <remote-image className="item-img" mode="widthFix" :src="item.image" />
           <div>{{item.name}}</div>
           <div>{{item.describes}}</div>
         </div>
@@ -36,11 +38,15 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
+import carouselFigure from '@/components/carouselFigure'
+import remoteImage from '@/components/remoteImage'
 import wxParse from 'mpvue-wxparse'
 
 export default {
   components: {
-    wxParse
+    wxParse,
+    carouselFigure,
+    remoteImage
   },
   data() {
     return{
@@ -59,7 +65,8 @@ export default {
         {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:1},
         {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:2}
       ],
-      yemianid: ''
+      yemianid: '',
+      imgUrls: []
     }
   },
   methods: {
@@ -78,6 +85,7 @@ export default {
         this.detail.deposit  =res.depositPrice
         this.detail.salesVolume =res.stock
         this.article =res.details
+        this.imgUrls = res.pictures.map(v => ({url: v.image}))
         this.recommed = res.classify
       })
     },
@@ -105,7 +113,7 @@ export default {
             if(yemianids.indexOf(that.yemianid) !== -1 ) {
               console.log('indexof')
               wx.showToast({
-                title: '已租借',
+                title: '已租借!',
                 icon: 'none',
                 duration: 2000
               })
@@ -117,17 +125,22 @@ export default {
                   key:"id",
                   data:yemianids
                 })
-            }      
+            }
           }
         },
         complete (res) {
           if (res.errMsg === 'getStorage:fail data not found') {
-            console.log('com')
+            //console.log('com')
             yemianids.push(that.yemianid)
             wx.setStorage({
               key:"id",
               data:yemianids
             })
+            wx.showToast({
+                title: '租借成功',
+                icon: 'success',
+                duration: 2000
+              })
           }
         }
     })
@@ -137,23 +150,28 @@ export default {
 //     if(res.id) {
 //       console.log('yes')
 //     } else{
-  
+
 //     }
 //   }
 // })
-      
+
       //  this.$router.push('/pages/myGallery/index')
     }
   },
   created() {
-    
+
     // this.toGetGooods(this.$route.query.id)
-    
+
   },
-  mounted(){
-    console.log(this.$route.query.id)
+  onShow() {
+    // console.log(this.$route.query.id)
     this.yemianid = this.$route.query.id
     this.toGetGooods(this.$route.query.id)
+  },
+  mounted(){
+   // console.log(this.$route.query.id)
+   // this.yemianid = this.$route.query.id
+   // this.toGetGooods(this.$route.query.id)
   }
 }
 </script>
@@ -199,20 +217,20 @@ export default {
   }
   .home{
     flex:1;
-    padding:20rpx 0; 
+    padding:20rpx 0;
   }
   .service{
     flex:1;
-    padding:20rpx 0; 
+    padding:20rpx 0;
   }
   .collect{
     flex:1;
-    padding:20rpx 0; 
+    padding:20rpx 0;
   }
   .rent{
     flex: 3;
     background: #f29c37;
     padding:20rpx 0;
-    color: #fff; 
+    color: #fff;
   }
 </style>

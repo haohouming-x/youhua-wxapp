@@ -1,3 +1,5 @@
+import Hack from './hack'
+
 // iBoxPlugin
 const utilsContext = require.context('@/plugins/ibox/utils', true, /\.js$/)
 let utils = {}
@@ -15,6 +17,8 @@ export default {
     const iBox = {
       ...utils,
     }
+
+    Vue.use(Hack);
 
     Vue.iBox = iBox
     Vue.prototype.$iBox = iBox
