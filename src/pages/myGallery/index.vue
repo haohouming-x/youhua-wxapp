@@ -32,7 +32,7 @@
     <div class="bottom">
       <div class="home" @click="toHomePage">首页</div>
       <div class="service">客服</div>
-      <div class="total">总计: <text class="item-amount">{{total}}</text></div>
+      <div class="total">总计: <text class="item-amount">{{total + ortotal}}</text></div>
       <div class="pay" @click="pay">去结算</div>
     </div>
   </div>
@@ -47,6 +47,7 @@ export default {
       //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
       // ],
       total: 0,
+      ortotal: 0,
       coustomerid: 1,
       datalist: []
     }
@@ -86,10 +87,8 @@ export default {
           }
           
         })
-        console.log('订单：' + ortotal)
-        console.log('第一次：' +that.total)
-        that.total += ortotal
-        console.log('第二次+：' +that.total)
+        that.ortotal = ortotal
+
       })
 
     },
