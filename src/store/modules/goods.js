@@ -1,15 +1,19 @@
 import Vue from 'vue'
-import {SET_LIST_GOODS, SET_CURRENT_GOODS} from '../types'
+import {SET_PAY_GOODS, SET_LIST_GOODS, SET_CURRENT_GOODS} from '../types'
 
 
 const state = {
   list: [],
   current: {},
+  waitPayList: [],
   // 随机选取数量
   randomCount: 6
 }
 
 const mutations = {
+  [SET_PAY_GOODS] (state, payload) {
+    state.waitPayList = payload.data
+  },
   [SET_LIST_GOODS] (state, payload) {
     if(payload.isConcat)
       state.list.concat(payload.data)
@@ -43,7 +47,8 @@ const getters = {
     }
 
     return result;
-  }
+  },
+  waitPayList: (state) => state.waitPayList
 }
 
 const actions = {
@@ -57,6 +62,14 @@ const actions = {
 
         return state.list;
       });
+  },
+  getPayGoods ({commit, state}, data = {}) {
+    return Vue.$http('mygallery.goods', {data, method: 'get'})
+      .then(v => {
+        commit(SET_PAY_GOODS,{data: v})
+
+        return state.payGoodsList
+      })
   },
   getGoodsById({commit, state}, data={}) {
     const {id} = data;

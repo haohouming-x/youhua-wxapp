@@ -18,3 +18,9 @@ export const SET_PAY_GOODS = 'set_pay_goods';
 export const SET_ORDER = 'set_order';
 
 export const SET_ORDER_LOGISTICS = 'set_order_logistics';
+
+export const SET_PAY_STATE = 'set_pay_state';
+
+export const SET_LOGISTICS = 'set_logistics';
+
+export const SET_HISTORY_ORDER = 'set_history_order';

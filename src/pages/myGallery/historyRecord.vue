@@ -1,12 +1,12 @@
 <template>
   <div class="history_record">
-    <ul class="hr_list" v-if="history_list != ''">
-      <li class="hr_item" v-for = "item in history_list" :key = "item">
+    <ul class="hr_list" v-if="orderList.length > 0">
+      <li class="hr_item" v-for = "item in orderList" :key = "item">
         <div class="img_title">
-          {{ item.name }}
-          <div class="times">{{ item.times }}</div>
+          {{ item.goods && item.goods.name }}
+          <div class="times">{{ item.createdAt }}</div>
         </div>
-        <img :src = item.imgUrl alt="">
+        <remote-image mode="widthFix" :src="item.goods ? item.goods.image : ''" />
       </li>
     </ul>
     <ul class="hr_list" v-else>
@@ -16,31 +16,32 @@
 </template>
 
 <script>
-   export default {
+import { mapGetters, mapActions } from 'vuex'
+import remoteImage from '@/components/remoteImage'
+
+  export default {
+    components: {
+       remoteImage
+    },
     data() {
       return {
-        history_list: [
-          // {
-          //   name: "油画1",
-          //   times: "2018-10-26 23:12",
-          //   imgUrl: "../../assets/images/img1.png"
-          // },{
-          //   name: "油画2",
-          //   times: "2018-10-26 23:12",
-          //   imgUrl: "../../assets/images/img1.png"
-          // },{
-          //   name: "油画3",
-          //   times: "2018-10-26 23:12",
-          //   imgUrl: "../../assets/images/img1.png"
-          // }
-        ]
+
       }
     },
     mounted() {
-      
+      this.getOrderList().then(v => {
+      console.log(this.orderList)
+       });
+    },
+    computed: {
+      ...mapGetters({
+        orderList: 'myGallery/completedOrderList',
+      })
     },
     methods: {
-      
+      ...mapActions({
+        'getOrderList': 'myGallery/getCompletedOrders'
+      })
     }
   }
 </script>

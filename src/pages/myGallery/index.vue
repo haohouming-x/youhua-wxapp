@@ -1,7 +1,9 @@
 <template>
   <div class="wrap">
-    <div class="item" v-for="(item, index) in paygoods" :key="index">
-      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods ? item.goods.image : ''  " /></div>
+    <div class="item" v-for="(item, index) in payGoods" :key="index">
+      <div class="item-imgbox">
+        <remote-image mode="widthFix" className="item-image" :src="item.image" />
+      </div>
       <div class="dis-flex">
         <div>
           <div class="marbot">{{item.name}}</div>
@@ -14,15 +16,17 @@
         </div>
       </div>
     </div>
-    <div class="item" v-for="(item, index) in orderlist" :key="index">
-      <div class="item-imgbox"> <image mode="widthFix" class="item-image" :src="item.goods ? item.goods.image : ''" /></div>
+    <div class="item" v-for="(item, index) in orderList" :key="index">
+      <div class="item-imgbox">
+        <remote-image mode="widthFix" className="item-image" :src="item.goods ? item.goods.image : ''" />
+      </div>
       <div class="dis-flex">
         <div>
-          <div class="marbot">{{item.name}}</div>
-          <div>{{item.longSize}}*{{item.wideSize}}</div>
+          <div class="marbot">{{item.goods && item.goods.name}}</div>
+          <div>{{item.longSize}}*{{item.goods && item.goods.wideSize}}</div>
         </div>
         <div class="text-ri">
-          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.goods && item.goods.depositPrice}}</text></div>
           <text class="delete" v-if="item.status ==='AE'">删除</text>
           <text class="return" v-if="item.status === 'RT'">退还</text>
         </div>
@@ -31,15 +35,26 @@
     <div class="history" @click="toHistoryPage">查看历史记录></div>
     <div class="bottom">
       <div class="home" @click="toHomePage">首页</div>
-      <div class="service">客服</div>
+      <contact-button type="default-light" size="18" session-from="weapp" class="service">
+        客服
+      </contact-button>
       <div class="total">总计: <text class="item-amount">{{total}}</text></div>
-      <div class="pay" @click="pay">去结算</div>
+      <template v-if="canPay">
+        <div class="pay" @click="pay" v-if="total > 0">去结算</div>
+        <div class="pay pay-disabled" v-else>去结算</div>
+      </template>
+      <div class="pay pay-disabled" @click="logistics" v-else>物流中</div>
     </div>
   </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-export default {  
+import remoteImage from '@/components/remoteImage'
+
+export default {
+  components: {
+    remoteImage
+  },
   data () {
     return {
       // datalist: [
@@ -47,62 +62,61 @@ export default {
       //   {url:"http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg", name: 'thelastsupper',size: '60cm*60cm',amount: '200', isreturen: 'false'}
       // ],
       total: 0,
-      coustomerid: 1,
       datalist: []
     }
   },
   created () {
-    
+
     },
     mounted () {
-      let  that= this
-      let total =0
-      let ortotal=0
+      const getOrderTotal = (orders) => {
+        return orders.reduce((acc, v) => {
+          if(v.status && v.status==='AE'){
+            acc += v['depositPrice']
+          }
+          if (v.status && v.status ==='RT') {
+            acc -= v['depositPrice']
+          }
+          return acc
+        }, 0)
+      }
+
       wx.getStorage({
         key: 'id',
-        success(res ) {
-          // console.log(res.data)
-            that.getgoods({id: res.data}).then((res) => {
-              // console.log(res)
-              res.forEach((value,index,arr) => {
-                // console.log(res[index]['console.log(that.total)'])
-                total += value['depositPrice']  
-              })
-              console.log(total)
-              that.total =total
+        success: (res) => {
+          this.getCurrentData(res.data)
+            .then(([payGoods, orders]) => {
+               let total = payGoods.reduce((acc, v) =>  acc + v['depositPrice'], 0)
+               total += getOrderTotal(orders);
+
+               this.total = total;
             })
-            
+        },
+        fail: (res) => {
+          if(res.errMsg === 'getStorage:fail data not found') {
+            this.getCurrentOrders()
+              .then(orders => {
+                this.total = getOrderTotal(orders);
+              })
+          }
         }
       })
-      this.getorderlist({id:this.coustomerid,status:['WS','AS']}).then((res)=> {
-        // console.log(res)
-        res.forEach((value,index,arr)=> {
-          // console.log(value.status)
-          if(value.status&& value.status==='AE'){
-            ortotal +=value['depositPrice']
-          }
-          if (value.status&&value.status ==='RT') {
-            ortotal -= value['depositPrice']
-          }
-          
-        })
-        console.log('订单：' + ortotal)
-        console.log('第一次：' +that.total)
-        that.total += ortotal
-        console.log('第二次+：' +that.total)
-      })
-
     },
     computed: {
       ...mapGetters({
-        paygoods: 'myGallery/list',
-        orderlist: 'myGallery/orderlist'
+        payGoods: 'goods/waitPayList',
+        orderList: 'myGallery/orderList',
+        // TODO 挂载到视图
+        logisticsInfo: 'myGallery/logisticsInfo',
+        orderId: 'myGallery/orderId',
+        canPay: 'myGallery/canPay'
       })
     },
     methods: {
        ...mapActions({
-         getgoods: 'myGallery/getgoods',
-         getorderlist: 'myGallery/getorderlist'
+         getLocalGoods: 'goods/getPayGoods',
+         getCurrentOrders: 'myGallery/getCurrentOrders',
+         getOrderLogistics: 'myGallery/getOrderLogistics'
        }),
       toHistoryPage() {
         this.$router.push('/pages/myGallery/historyRecord')
@@ -110,9 +124,24 @@ export default {
       pay() {
         this.$router.push('/pages/myGallery/payPage')
       },
+      logistics() {
+        // TODO 弹框控制(发送前显示或数据读取后)
+
+        this.getOrderLogistics({id: this.orderId})
+           .then(v => {
+              // 数据读取后
+              // console.log(this.logisticsInfo)
+           })
+      },
       toHomePage() {
         this.$router.push('/pages/home/index')
       },
+      getCurrentData(goodsIds) {
+        return Promise.all([
+          this.getLocalGoods({id: goodsIds}),
+          this.getCurrentOrders()
+        ])
+      }
     }
 }
 </script>
@@ -123,7 +152,7 @@ export default {
   }
   .item{
     width: 100%;
-    
+
     margin: 30rpx auto;
     background: #fff;
   }
@@ -176,7 +205,7 @@ export default {
   .bottom{
     position: fixed;
     bottom: 0;
-    
+
     width: 100%;
     background: #fff;
     display: flex;
@@ -188,7 +217,6 @@ export default {
     line-height: 80rpx;
   }
   .service{
-    flex: 1;
     height: 80rpx;
     line-height: 80rpx;
   }
@@ -203,5 +231,8 @@ export default {
     color:#fff;
     height: 80rpx;
     line-height: 80rpx;
+  }
+  .pay-disabled {
+    background: #ccc;
   }
 </style>

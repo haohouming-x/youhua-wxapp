@@ -1,5 +1,6 @@
 const LOADING_LIMIT_TIME = 500
 export default {
+  // host: 'https://gezdqnryhj3gk4ttnfxw4lzrfyydu43xmftwozlsfzyhe2ltnuxhs3lm.prism.stoplight.io',
   host: 'https://www.nowhoarts.com',
   // 关于接口loading的配置
   loading: {
