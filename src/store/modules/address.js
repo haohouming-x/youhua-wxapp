@@ -33,6 +33,18 @@ const actions = {
                     return state.userAddress;
                 }
             })
+    },
+    changeAddress({commit, state}, data={}) {
+        const {id, ...other} = data;
+        return Vue.$http(`globalUrl.changeAddress@{id:${id}}`, {data: other, method: 'put'})
+            .then(v => {
+                if (!!v) {
+                    console.log(v);
+                    let address = v;
+                    commit(ADD_ADDRESS, {data: address});
+                    return state.userAddress;
+                }
+            })
     }
 }
 

@@ -67,13 +67,17 @@
             old_prc: "2800",
             status: 1
           }
-        ]
+        ],
+        orderData: {
+          orderBill: []
+        }
       }
     },
     computed: {
       ...mapGetters({
         userInfo: 'userInfo/userInfo',
         userAddress: 'payPage/userAddress',
+        orderList: 'myGallery/orderlist'
       }),
     },
     mounted() {
@@ -95,6 +99,12 @@
           })
         }
       });
+      // console.log("订单列表",typeof this.orderList);
+      let list = this.orderList;
+      for (var i in list) {
+        this.orderData.orderBill.push({status: list[i].status});
+        console.log(this.orderData);
+      }
     },
     methods: {
       toHomePage() {
@@ -116,6 +126,11 @@
           })
         } else {
           // 支付TODO
+        }
+      },
+      changeAddress() {
+        if (this.userAddress != "") {
+          this.$router.push({path: '/pages/address/address'});
         }
       },
       ...mapActions({

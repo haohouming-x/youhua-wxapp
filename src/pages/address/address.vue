@@ -3,11 +3,11 @@
     <ul class="address_list">
       <li>
         <label for="">收件人姓名</label>
-        <input type="text" placeholder="请填写" :value="name">
+        <input type="text" placeholder="请填写" v-model="addressInfo.name">
       </li>
       <li>
         <label for="">电话号码</label>
-        <input type="tel" placeholder="请填写" :value="contact">
+        <input type="tel" placeholder="请填写" v-model="addressInfo.contact">
         <!-- <input type="tel" placeholder="请填写" class="middle" :value="contact"> -->
         <!-- <div class="send_btn" @click="getCode">{{ countDown }}</div> -->
       </li>
@@ -17,7 +17,7 @@
       </li> -->
       <li>
         <label for="">所在城市</label>
-        <picker mode="region" @change="change" :value="region" class="r_picker">
+        <picker mode="region" @change="change" v-model="region" class="r_picker">
           <view class="region">
             {{region[0]}},{{region[1]}},{{region[2]}}
           </view>
@@ -25,16 +25,17 @@
       </li>
       <li>
         <label for="">详细地址</label>
-        <input type="text" placeholder="请填写" :value="detailedAddress">
+        <input type="text" placeholder="请填写" v-model="addressInfo.detailedAddress">
       </li>
       <li>
         <label for="">备注</label>
-        <input type="text" placeholder="请填写" :value="remark">
+        <input type="text" placeholder="请填写" v-model="addressInfo.remark">
       </li>
     </ul>
 
     <div class="submit_outer">
-      <div class="submit_btn" @click="submitAddress">确定</div>
+      <div class="submit_btn" @click="submitAddress" v-if="!hasAddress">确定</div>
+      <div class="submit_btn" @click="resetAddress" v-else>修改地址</div>
     </div>
   </div>
 </template>
@@ -56,7 +57,8 @@
           district: '',
           detailedAddress: '',
           remark: '',
-        }
+        },
+        hasAddress: false
       }
     },
     computed: {
@@ -66,7 +68,15 @@
       }),
     },
     mounted() {
-      
+      if (this.userAddress != "") {
+        this.hasAddress = true;
+        this.addressInfo = this.userAddress;
+        this.region[0] = this.addressInfo.province;
+        this.region[1] = this.addressInfo.city;
+        this.region[2] = this.addressInfo.district;
+      } else {
+        this.hasAddress = false;
+      }
     },
     methods: {
       change(e) {
@@ -94,7 +104,14 @@
       },
       submitAddress() { // 提交
         let addressInfo = this.addressInfo;
-        let id = this.userInfo.id;
+        let name = addressInfo.name;
+        let contact = addressInfo.contact;
+        let provice = addressInfo.province;
+        let city =  addressInfo.city;
+        let district = addressInfo.district;
+        let detailedAddress = addressInfo.detailedAddress;
+        let remark = addressInfo.remark;
+        let id = this.userInfo.id === undefined ? 10010 : this.userInfo.id;
         if (addressInfo.name == '') {
           wx.showToast({
             title: '请输入名称',
@@ -115,13 +132,61 @@
           })
         } else {
           this.newAddress({
-            id,
-            addressInfo
+            name,
+            contact,
+            provice,
+            city,
+            district,
+            detailedAddress,
+            remark,
+            id
           })
         }
       },
+      resetAddress() { // 修改
+        let addressInfo = this.addressInfo;
+        let name = addressInfo.name;
+        let contact = addressInfo.contact;
+        let provice = addressInfo.province;
+        let city =  addressInfo.city;
+        let district = addressInfo.district;
+        let detailedAddress = addressInfo.detailedAddress;
+        let remark = addressInfo.remark;
+        let id = this.userInfo.id === undefined ? 10010 : this.userInfo.id;
+        if (addressInfo.name == '') {
+          wx.showToast({
+            title: '请输入名称',
+            icon: 'none',
+            duration: 1500
+          })
+        } else if (addressInfo.contact == '') {
+          wx.showToast({
+            title: '请输入手机号码',
+            icon: 'none',
+            duration: 1500
+          })
+        } else if (addressInfo.detailedAddress == '') {
+          wx.showToast({
+            title: '请输入详细地址',
+            icon: 'none',
+            duration: 1500
+          })
+        } else {
+          this.changeAddress({
+            name,
+            contact,
+            provice,
+            city,
+            district,
+            detailedAddress,
+            remark,
+            id
+          });
+        }
+      },
       ...mapActions({
-        newAddress: 'address/newAddress'
+        newAddress: 'address/newAddress',
+        changeAddress: 'address/changeAddress'
       }),
     }
   }
