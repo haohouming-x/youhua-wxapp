@@ -1,9 +1,9 @@
 <template>
   <div class="wrap">
     <div class="card">
-      <div> 瑙琥共享油画会员卡</div>
-      <div>240元 <text>300元</text> </div> 
-      <div>自购买当日起90天内免费更换油画</div>
+      <div class="card_title"> 瑙琥共享油画会员卡</div>
+      <div class="card_prc">现价：240元 <text class="card_prc_o">原价：300元</text> </div> 
+      <div class="card_info">自购买当日起90天内免费更换油画</div>
     </div>
     <div class="just">
       <text>原价</text>
@@ -14,16 +14,16 @@
       <text class="money">300</text>
     </div>
     <div class="desc-box">
-      <div>什么是共享油画季卡会员</div>
-      <div>MEMBERSHIPLAN</div>
+      <div class="chn_title">什么是共享油画季卡会员</div>
+      <div class="eng_title">MEMBERSHIPLAN</div>
     </div>
     
     <div class="planbox">
       <div v-for="(item, index) in planlist" :key="index">
-          <div class="text-cen"><image class="plan-img" :src="item.url" /></div>
-        <div class="text-cen">{{item.name}}</div>
-        <div>{{item.title}}</div>
-        <div>{{item.describe}}</div>
+        <div class="text-cen"><image class="plan-img" :src="item.url" /></div>
+        <div class="text-cen m_name">{{item.name}}</div>
+        <div class="m_title">{{item.title}}</div>
+        <div class="m_describe">{{item.describe}}</div>
       </div>
     </div>
     <div class="bottom">
@@ -71,7 +71,7 @@ export default {
   }
   .planbox div{
     flex: 1;
-    margin: 1%;
+    /* margin: 1%; */
   }
   .plan-img{
     width: 100rpx;
@@ -103,5 +103,46 @@ export default {
     padding: 20rpx 0;
     background: #f29c37;
     text-align: center;
+  }
+  .m_name {
+    text-align: center;
+    font-size: 32rpx;
+    margin-bottom: 32rpx;
+  }
+  .m_title {
+    text-align: center;
+    font-size: 28rpx;
+    color: #ccc;
+    margin-bottom: 48rpx;
+  }
+  .m_describe {
+    text-align: center;
+    font-size: 28rpx;
+    color: #333;
+  }
+  .chn_title {
+    margin: 96rpx 0 12rpx;
+  }
+  .eng_title {
+    color: #ccc;
+    font-size: 24rpx;
+    margin-bottom: 48rpx;
+  }
+  .card_title {
+    margin-bottom: 32rpx;
+  }
+  .card_prc {
+    font-size: 28rpx;
+    margin-bottom: 32rpx;
+  }
+  .card_prc_o {
+    color: #666;
+    font-size: 24rpx;
+    margin-left: 12rpx;
+  }
+  .card_info {
+    color: #666;
+    font-size: 24rpx;
+    margin-bottom: 128rpx;
   }
 </style>

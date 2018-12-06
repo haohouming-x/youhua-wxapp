@@ -16,9 +16,9 @@
         <div class="goodsbox-outer">
           <div v-for="(item,index) in goods" :key="index" class="goods-item" @click="toDetails(item.id)">
             <remote-image mode="widthFix" className="good-item-img" :src="item.image" />
-            <div>{{item.name}}</div>
-            <div>{{item.describes}}</div>
-            <div>{{item.longSize}} * {{item.wideSize}}</div>
+            <div class="tt">{{item.name}}</div>
+            <div class="s_tt">{{item.describes}}</div>
+            <div class="size">{{item.longSize}} * {{item.wideSize}}</div>
           </div>
         </div>
       </div>
@@ -205,5 +205,15 @@ export default {
   }
   .good-item-img{
     width: 100%;
+  }
+  .tt {
+    font-size: 32rpx;
+  }
+  .s_tt {
+    font-size: 28rpx;
+  }
+  .size {
+    font-size: 24rpx;
+    color: #ccc;
   }
 </style>
