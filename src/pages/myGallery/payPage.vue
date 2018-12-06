@@ -99,12 +99,12 @@
           })
         }
       });
-      // console.log("订单列表",typeof this.orderList);
-      let list = this.orderList;
-      for (var i in list) {
-        this.orderData.orderBill.push({status: list[i].status});
-        console.log(this.orderData);
-      }
+      console.log("订单列表",this.orderList);
+      // let list = this.orderList;
+      // for (var i in list) {
+      //   this.orderData.orderBill.push({status: list[i].status});
+      //   console.log(this.orderData);
+      // }
     },
     methods: {
       toHomePage() {
