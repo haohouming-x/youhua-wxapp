@@ -14,14 +14,14 @@ const state = {
 }
 
 const mutations = {
-    [SET_ADDRESS] (state, payload) {
-        state.userAddress = payload.data;
+  [SET_ADDRESS] (state, payload) {
+    if(payload.data) state.userAddress = payload.data;
     }
 }
 
 const getters = {
   userAddress: state => state.userAddress,
-  hasUserAddress: state => !!state.userAddress
+  hasUserAddress: state => !!state.userAddress.name
 }
 
 const actions = {

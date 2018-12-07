@@ -11,8 +11,7 @@
         </div>
         <div class="text-ri">
           <div class="marbot"> 押金:<text class="item-amount">{{item.depositPrice}}</text></div>
-          <text class="delete" v-if="item.status ==='AE'">删除</text>
-          <text class="return" v-if="item.status === 'RT'">退还</text>
+          <text class="delete" @click="delectStorage(item.id)">删除</text>
         </div>
       </div>
     </div>
@@ -27,8 +26,8 @@
         </div>
         <div class="text-ri">
           <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
-          <text class="delete" v-if="item.status ==='AE'">删除</text>
-          <text class="return" v-if="item.status === 'RT'">退还</text>
+          <!---<text class="delete" @click="delectStorage" v-if="item.status ==='AE'">删除</text>--->
+          <!--- <text class="return"  @click="delectStore" v-if="item.status === 'RT'">退还</text>--->
         </div>
       </div>
     </div>
@@ -87,8 +86,9 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import remoteImage from '@/components/remoteImage'
+import {SET_PAY_GOODS} from '@/store/types'
 
 export default {
   components: {
@@ -135,8 +135,6 @@ export default {
           .then(([payGoods, orders]) => {
               // orders === getters.orderList
               let total = payGoods.reduce((acc, v) =>  acc + v['depositPrice'], 0)
-              console.log(total);
-              console.log(getOrderTotal(orders));
               total += getOrderTotal(orders);
 
               this.setTotal(total);
@@ -164,6 +162,9 @@ export default {
     })
   },
   methods: {
+    ...mapMutations({
+       setLocalGoods: `goods/${SET_PAY_GOODS}`
+    }),
     ...mapActions({
       getLocalGoods: 'goods/getPayGoods',
       getCurrentOrders: 'myGallery/getCurrentOrders',
@@ -175,6 +176,36 @@ export default {
     },
     pay() {
       this.$router.push('/pages/myGallery/payPage')
+    },
+    delectStorage(id) {
+      wx.showModal({
+        title: '提示',
+        content: '是否确认删除',
+        success:(res) => {
+          if (res.confirm) {
+            wx.getStorage({
+              key: 'id',
+              success: (res) => {
+                if(res.data) {
+                  const newIds = res.data.filter(v => v != id);
+                  console.log(res.data)
+                  console.log(id);
+                  console.log(newIds);
+                  wx.setStorage({
+                    key:"id",
+                    data: newIds
+                  })
+
+                  this.setLocalGoods(this.payGoods.filter(v=>v.id != id))
+                }
+              }
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+
     },
     logistics() {
       this.getOrderLogistics({id: this.orderId})

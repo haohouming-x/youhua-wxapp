@@ -31,7 +31,7 @@
       <div class="bottom">
         <div class="home" @click="toHomePage">首页</div>
         <div class="service">客服</div>
-        <div class="collect">收藏</div>
+        <div class="collect" @click="$router.push('/pages/myGallery/index')">收藏</div>
         <div class="rent" @click="rent">租这幅</div>
       </div>
   </div>
@@ -113,7 +113,7 @@ export default {
             if(yemianids.indexOf(that.yemianid) !== -1 ) {
               console.log('indexof')
               wx.showToast({
-                title: '已租借!',
+                title: '已添加',
                 icon: 'none',
                 duration: 2000
               })
@@ -124,6 +124,11 @@ export default {
                 wx.setStorage({
                   key:"id",
                   data:yemianids
+                })
+                wx.showToast({
+                  title: '添加成功',
+                  icon: 'success',
+                  duration: 2000
                 })
             }
           }
@@ -137,7 +142,7 @@ export default {
               data:yemianids
             })
             wx.showToast({
-                title: '租借成功',
+                title: '添加成功',
                 icon: 'success',
                 duration: 2000
               })
