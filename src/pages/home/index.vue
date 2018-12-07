@@ -154,12 +154,9 @@ export default {
    beMember() {
      this.$router.push('/pages/member/index')
    },
-   handleClassify (item){
-      this.headline = item.title
-    },
-    toDetails(id) {
+   toDetails(id) {
     this.$router.push({path: '/pages/goodsDetail/index', query: {id: id}})
-    },
+   },
     beMember() {
       this.$router.push('/pages/member/index')
     }

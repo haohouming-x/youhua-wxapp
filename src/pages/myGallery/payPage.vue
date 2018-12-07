@@ -103,7 +103,7 @@
     },
     mounted() {
       this.getAddress().then(v => {
-        // console.log(this.userAddress);
+        console.log(this.hasUserAddress);
         if (!this.hasUserAddress) {
           wx.showModal({
             title: '提示',
