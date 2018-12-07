@@ -68,7 +68,7 @@ const actions = {
       .then(v => {
         commit(SET_PAY_GOODS,{data: v})
 
-        return state.payGoodsList
+        return state.waitPayList
       })
   },
   getGoodsById({commit, state}, data={}) {

@@ -1,6 +1,6 @@
 <template>
     <div class="pay_page">
-      <div class="pay_info">
+      <div class="pay_info" @click="toAddress">
         <img src="../../assets/images/icon3.png" alt="">
         <div class="info_box">
           <div class="info-box_top">
@@ -14,16 +14,27 @@
         </div>
       </div>
       <ul class="order_list">
-        <li v-for = "item in orderList" :key = "item">
+        <li v-for = "item in waitPayGoods" :key = "item">
           <div class="img_box">
-            <img src="../../assets/images/img1.png" alt="">
+            <remote-image mode="widthFix" className="item-image" :src="item.image" />
           </div>
           <div class="p-info_box">
             <div class="name">{{ item.name }}</div>
-            <div class="hold_prc">押金：￥{{ item.hold_prc }}</div>
-            <div class="old_prc">￥{{ item.old_prc }}</div>
+            <div class="hold_prc">押金：￥{{ item.depositPrice }}</div>
+            <div class="old_prc">￥{{ item.marketPrice }}</div>
           </div>
-          <div class="info_status" :class="item.status === 0 ? 'clr-orange' : ''">{{ item.status == 0 ? '待退还' : '待寄送' }}</div>
+          <div class="info_status">待寄送</div>
+        </li>
+        <li v-for = "item in orderList" :key = "item">
+          <div class="img_box">
+            <remote-image mode="widthFix" className="item-image" :src="item.goods ? item.goods.image : ''" />
+          </div>
+          <div class="p-info_box">
+            <div class="name">{{ item.goods && item.goods.name }}</div>
+            <div class="hold_prc">押金：￥{{ item.depositPrice }}</div>
+            <div class="old_prc">￥{{ item.goods && item.goods.marketPrice }}</div>
+          </div>
+          <div class="info_status clr-orange">待退还</div>
         </li>
       </ul>
       <div class="pay_footer">
@@ -34,11 +45,15 @@
               <p class="btn_text">首页</p>
             </div>
             <div class="footer-le_btn">
-              <img src="../../assets/images/icon2.png" alt="">
-              <p class="btn_text">客服</p>
+              <button open-type="contact" plain="true" size="21" session-from="weapp" style="border: 0; padding:0 3rpx;">
+                <img src="../../assets/images/icon2.png" alt="">
+                <p class="btn_text">
+                  客服
+                </p>
+              </button>
             </div>
             <div class="tips_box">
-              <p class="clr_text">押金：￥300</p>
+              <p class="clr_text">押金：￥{{orderTotal}}</p>
               <p class="clr_text">随时可退</p>
             </div>
           </div>
@@ -50,41 +65,46 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
+  import remoteImage from '@/components/remoteImage'
+
   export default {
+    components: {
+      remoteImage
+    },
     data() {
       return {
-        address: {},
-        // userAddress: "广东省广州市荔湾区",
-        orderList: [
-          {
-            name: "油画名称",
-            hold_prc: "300",
-            old_prc: "2800",
-            status: 0
-          },{
-            name: "油画名称",
-            hold_prc: "300",
-            old_prc: "2800",
-            status: 1
-          }
-        ],
-        orderData: {
-          orderBill: []
-        }
+
       }
     },
     computed: {
       ...mapGetters({
         userInfo: 'userInfo/userInfo',
-        userAddress: 'payPage/userAddress',
-        orderList: 'myGallery/orderlist'
+        userAddress: 'address/userAddress',
+        hasUserAddress: 'address/hasUserAddress',
+        waitPayGoods: 'goods/waitPayList',
+        orderTotal: 'myGallery/orderTotal',
+        orderList: 'myGallery/orderList'
       }),
+      payOrders() {
+        return this.orderList.map(v => ({
+          status: 'RT',
+          goodsId: v.goods.id
+        }))
+      },
+      payLocals() {
+        return this.waitPayGoods.map(v => ({
+          status: 'AE',
+          goodsId: v.id
+        }))
+      }
+    },
+    onShow() {
+      if(this.orderTotal === 0) this.$router.push('/pages/myGallery/index')
     },
     mounted() {
-      let id = this.userInfo.id == undefined ? 10010 : this.userInfo.id;
-      this.getAddress({id}).then(v => {
+      this.getAddress().then(v => {
         // console.log(this.userAddress);
-        if (this.userAddress == "") {
+        if (!this.hasUserAddress) {
           wx.showModal({
             title: '提示',
             content: '您还没有设置地址',
@@ -100,18 +120,13 @@
         }
       });
       console.log("订单列表",this.orderList);
-      // let list = this.orderList;
-      // for (var i in list) {
-      //   this.orderData.orderBill.push({status: list[i].status});
-      //   console.log(this.orderData);
-      // }
     },
     methods: {
       toHomePage() {
         this.$router.push('/pages/home/index')
       },
       payNow() {
-        if (this.userAddress == "") {
+        if (!this.hasUserAddress) {
           wx.showModal({
             title: '提示',
             content: '您还没有设置地址',
@@ -125,16 +140,64 @@
             }
           })
         } else {
-          // 支付TODO
+          this.postOrder()
+            .then(v => {
+              console.log(v)
+              return this.payOrder(v.id)
+            })
+            .then(res => {
+              // res 为jssdk需要的参数
+              const {timestamp: timeStamp, ...other} = res;
+
+              wx.requestPayment({
+                 ...other,
+                 timeStamp,
+                 success: () => {
+                   console.log('ok')
+                   wx.removeStorage({key: 'id'});
+                 }
+              })
+            })
         }
       },
-      changeAddress() {
-        if (this.userAddress != "") {
+      postOrder() {
+        const data = [...this.payLocals, ...this.payOrders];
+
+          if(data.length <= 0 ) {
+            wx.showToast({
+              title: '请先选择商品',
+              icon: 'error',
+              duration: 1500
+            })
+          }
+
+          const {
+            name: consigneeName,
+            contact: consigneeConcat,
+            province, city, district, detailedAddress
+          } = this.userAddress;
+
+          const consigneeAddress = province + city + district + detailedAddress;
+
+          return this.postUserOrder({
+            orderBill: data,
+            consigneeName,
+            consigneeConcat,
+            consigneeAddress
+          })
+      },
+      toAddress() {
           this.$router.push({path: '/pages/address/address'});
+      },
+      changeAddress() {
+        if (this.hasUserAddress) {
+          this.toAddress();
         }
       },
       ...mapActions({
-        getAddress: 'payPage/getAddress'
+        getAddress: 'address/getUserAddress',
+        postUserOrder: 'myGallery/postUserOrder',
+        payOrder: 'pay/order'
       }),
     }
   }
@@ -184,7 +247,7 @@
     margin-bottom: 60rpx;
     border-radius: 20rpx;
     box-shadow: 0 4px 10px 2px rgba(0, 0, 0, .06);
-    height: 200rpx; 
+    height: 200rpx;
     position: relative;
   }
 
@@ -197,8 +260,7 @@
     border-radius: 20rpx;
     overflow: hidden;
   }
-
-  .order_list li .img_box img {
+  .order_list li .img_box img, .item-image {
     width: 200rpx;
     height: 200rpx;
     object-fit: cover;
@@ -332,4 +394,3 @@
     background-color: #f7bf64;
   }
 </style>
-

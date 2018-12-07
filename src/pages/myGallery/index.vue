@@ -10,7 +10,7 @@
           <div>{{item.longSize}}*{{item.wideSize}}</div>
         </div>
         <div class="text-ri">
-          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
+          <div class="marbot"> 押金:<text class="item-amount">{{item.depositPrice}}</text></div>
           <text class="delete" v-if="item.status ==='AE'">删除</text>
           <text class="return" v-if="item.status === 'RT'">退还</text>
         </div>
@@ -26,25 +26,13 @@
           <div>{{item.longSize}}*{{item.goods && item.goods.wideSize}}</div>
         </div>
         <div class="text-ri">
-          <div class="marbot"> 退还押金:<text class="item-amount">{{item.goods && item.goods.depositPrice}}</text></div>
+          <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
           <text class="delete" v-if="item.status ==='AE'">删除</text>
           <text class="return" v-if="item.status === 'RT'">退还</text>
         </div>
       </div>
     </div>
     <div class="history" @click="toHistoryPage">查看历史记录></div>
-    <!-- <div class="bottom">
-      <div class="home" @click="toHomePage">首页</div>
-      <contact-button type="default-light" size="18" session-from="weapp" class="service">
-        客服
-      </contact-button>
-      <div class="total">总计: <text class="item-amount">{{total}}</text></div>
-      <template v-if="canPay">
-        <div class="pay" @click="pay" v-if="total > 0">去结算</div>
-        <div class="pay pay-disabled" v-else>去结算</div>
-      </template>
-      <div class="pay pay-disabled" @click="logistics" v-else>物流中</div>
-    </div> -->
     <div class="pay_footer">
       <div class="footer_inner">
         <div class="inner_le">
@@ -53,18 +41,23 @@
             <p class="btn_text">首页</p>
           </div>
           <div class="footer-le_btn">
-            <img src="../../assets/images/icon2.png" alt="">
-            <p class="btn_text">客服</p>
+            <button open-type="contact" plain="true" size="21" session-from="weapp" style="border: 0; padding:0 3rpx;">
+              <img src="../../assets/images/icon2.png" alt="">
+              <p class="btn_text">
+                客服
+              </p>
+            </button>
           </div>
           <div class="tips_box">
-            <p class="clr_text">总计: {{total}}</p>
+            <p class="clr_text">总计: {{orderTotal}}</p>
           </div>
         </div>
-        <div v-if="canPay">
-          <div class="inner_ri" @click="pay" v-if="total > 0">去结算</div>
+        <template v-if="!showLogistics">
+          <div class="inner_ri" @click="pay" v-if="orderTotal != 0">去结算</div>
           <div class="inner_ri dis" v-else>去结算</div>
-        </div>
-        <div class="inner_ri dis" @click="logistics" v-else>物流中</div>
+        </template>
+        <div class="inner_ri dis" @click="logistics" v-else-if="!!orderId">物流中</div>
+        <div class="inner_ri dis" v-else>去结算</div>
       </div>
     </div>
     <div class="mask" v-if="popShow">
@@ -109,46 +102,28 @@ export default {
       // ],
       total: 0,
       datalist: [],
-      showList: [
-        {
-          status: 1,
-          label: '已收货',
-          dateTimes: '2018-12-06 21:52',
-        },{
-          status: 0,
-          label: '运输中',
-          dateTimes: '2018-12-06 21:52',
-        },{
-          status: 0,
-          label: '代发货',
-          dateTimes: '2018-12-06 21:52',
-        },{
-          status: 0,
-          label: '美国加利福利亚洛杉矶科比家',
-          dateTimes: '2018-12-06 21:52',
-        }
-      ],
+      showList: [],
       popShow: false,
-      noLogisticsInfo: false
+      noLogisticsInfo: true
     }
   },
   created () {
 
   },
   mounted () {
-    // for (var i = 0; i < this.showList.length; i++) {                   
+    // for (var i = 0; i < this.showList.length; i++) {
     //   this.showList[i].date =  this.showList[i].dateTimes.substring(5, 10);
-    //   this.showList[i].time =  this.showList[i].dateTimes.substring(11, 16);                
+    //   this.showList[i].time =  this.showList[i].dateTimes.substring(11, 16);
     // }
-    
+
     const getOrderTotal = (orders) => {
       return orders.reduce((acc, v) => {
-        if(v.status && v.status==='AE'){
-          acc += v['depositPrice']
-        }
-        if (v.status && v.status ==='RT') {
+        // if(v.status && v.status==='AE'){
+        //   acc += v['depositPrice']
+        // }
+        // if (v.status && v.status ==='RT') {
           acc -= v['depositPrice']
-        }
+        // }
         return acc
       }, 0)
     }
@@ -158,17 +133,21 @@ export default {
       success: (res) => {
         this.getCurrentData(res.data)
           .then(([payGoods, orders]) => {
+              // orders === getters.orderList
               let total = payGoods.reduce((acc, v) =>  acc + v['depositPrice'], 0)
+              console.log(total);
+              console.log(getOrderTotal(orders));
               total += getOrderTotal(orders);
 
-              this.total = total;
+              this.setTotal(total);
           })
+          .catch(v => console.log(v))
       },
       fail: (res) => {
         if(res.errMsg === 'getStorage:fail data not found') {
           this.getCurrentOrders()
             .then(orders => {
-              this.total = getOrderTotal(orders);
+              this.setTotal(getOrderTotal(orders));
             })
         }
       }
@@ -178,16 +157,17 @@ export default {
     ...mapGetters({
       payGoods: 'goods/waitPayList',
       orderList: 'myGallery/orderList',
-      // TODO 挂载到视图
       logisticsInfo: 'myGallery/logisticsInfo',
       orderId: 'myGallery/orderId',
-      canPay: 'myGallery/canPay'
+      orderTotal: 'myGallery/orderTotal',
+      showLogistics: 'myGallery/showLogistics'
     })
   },
   methods: {
     ...mapActions({
       getLocalGoods: 'goods/getPayGoods',
       getCurrentOrders: 'myGallery/getCurrentOrders',
+      setTotal: 'myGallery/setTotal',
       getOrderLogistics: 'myGallery/getOrderLogistics'
     }),
     toHistoryPage() {
@@ -197,17 +177,19 @@ export default {
       this.$router.push('/pages/myGallery/payPage')
     },
     logistics() {
-      // TODO 弹框控制(发送前显示或数据读取后)
-
       this.getOrderLogistics({id: this.orderId})
           .then(v => {
             // 数据读取后
-            // console.log(this.logisticsInfo)
+             console.log(this.logisticsInfo)
             if (this.logisticsInfo.length > 0) {
+              console.log( this.logisticsInfo)
+              this.noLogisticsInfo = false;
               this.showList = this.logisticsInfo;
-              for (var i = 0; i < this.showList.length; i++) {                   
-                this.showList[i].date =  this.showList[i].dateTimes.substring(5, 10);
-                this.showList[i].time =  this.showList[i].dateTimes.substring(11, 16);                
+              for (var i = 0; i < this.showList.length; i++) {
+                if(this.showList[i].datetime) {
+                  this.showList[i].date =  this.showList[i].datetime.substring(5, 10);
+                  this.showList[i].time =  this.showList[i].datetime.substring(11, 16);
+                }
               };
               this.popShow = true;
             } else {

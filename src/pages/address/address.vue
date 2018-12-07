@@ -34,7 +34,7 @@
     </ul>
 
     <div class="submit_outer">
-      <div class="submit_btn" @click="submitAddress" v-if="!hasAddress">确定</div>
+      <div class="submit_btn" @click="submitAddress" v-if="!hasUserAddress">确定</div>
       <div class="submit_btn" @click="resetAddress" v-else>修改地址</div>
     </div>
   </div>
@@ -65,17 +65,19 @@
       ...mapGetters({
         userInfo: 'userInfo/userInfo',
         userAddress: 'address/userAddress',
+        hasUserAddress: 'address/hasUserAddress',
       }),
     },
     mounted() {
-      if (this.userAddress != "") {
-        this.hasAddress = true;
+      if (this.hasUserAddress) {
         this.addressInfo = this.userAddress;
         this.region[0] = this.addressInfo.province;
         this.region[1] = this.addressInfo.city;
         this.region[2] = this.addressInfo.district;
       } else {
-        this.hasAddress = false;
+        this.addressInfo.province = this.region[0];
+        this.addressInfo.city = this.region[1];
+        this.addressInfo.district = this.region[2];
       }
     },
     methods: {
@@ -102,86 +104,69 @@
           },1000)
         }
       },
-      submitAddress() { // 提交
+      checkAddressInfo() {
         let addressInfo = this.addressInfo;
-        let name = addressInfo.name;
-        let contact = addressInfo.contact;
-        let provice = addressInfo.province;
-        let city =  addressInfo.city;
-        let district = addressInfo.district;
-        let detailedAddress = addressInfo.detailedAddress;
-        let remark = addressInfo.remark;
-        let id = this.userInfo.id === undefined ? 10010 : this.userInfo.id;
+        let isValid = false;
+
         if (addressInfo.name == '') {
           wx.showToast({
             title: '请输入名称',
-            icon: 'none',
+            icon: 'error',
             duration: 1500
           })
         } else if (addressInfo.contact == '') {
           wx.showToast({
             title: '请输入手机号码',
-            icon: 'none',
+            icon: 'error',
             duration: 1500
           })
         } else if (addressInfo.detailedAddress == '') {
           wx.showToast({
             title: '请输入详细地址',
-            icon: 'none',
+            icon: 'error',
             duration: 1500
           })
         } else {
+          isValid = true;
+        }
+
+        return isValid;
+      },
+      submitAddress() { // 提交
+        if(this.checkAddressInfo()) {
+          const {name, contact, province, city, district, detailedAddress, remark} = this.addressInfo;
+          const {id} = this.userInfo;
+
           this.newAddress({
             name,
             contact,
-            provice,
+            province,
             city,
             district,
             detailedAddress,
             remark,
             id
+          }).then(v => {
+            this.$router.back()
           })
         }
       },
       resetAddress() { // 修改
-        let addressInfo = this.addressInfo;
-        let name = addressInfo.name;
-        let contact = addressInfo.contact;
-        let provice = addressInfo.province;
-        let city =  addressInfo.city;
-        let district = addressInfo.district;
-        let detailedAddress = addressInfo.detailedAddress;
-        let remark = addressInfo.remark;
-        let id = this.userInfo.id === undefined ? 10010 : this.userInfo.id;
-        if (addressInfo.name == '') {
-          wx.showToast({
-            title: '请输入名称',
-            icon: 'none',
-            duration: 1500
-          })
-        } else if (addressInfo.contact == '') {
-          wx.showToast({
-            title: '请输入手机号码',
-            icon: 'none',
-            duration: 1500
-          })
-        } else if (addressInfo.detailedAddress == '') {
-          wx.showToast({
-            title: '请输入详细地址',
-            icon: 'none',
-            duration: 1500
-          })
-        } else {
+        if(this.checkAddressInfo()) {
+          const {id, name, contact, province, city, district, detailedAddress, remark} = this.addressInfo;
+
           this.changeAddress({
             name,
             contact,
-            provice,
+            province,
             city,
             district,
             detailedAddress,
             remark,
             id
-          });
+          }).then(v => {
+            this.$router.back()
+          })
         }
       },
       ...mapActions({
@@ -239,7 +224,7 @@
     background-color: #f7bf64;
     border-radius: 60rpx;
   }
-  
+
   .address_list li .r_picker {
     width: 535rpx;
     height: 60rpx;

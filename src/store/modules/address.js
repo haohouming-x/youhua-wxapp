@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ADD_ADDRESS } from '../types'
+import { SET_ADDRESS } from '../types'
 
 const state = {
     userAddress: {
@@ -14,34 +14,49 @@ const state = {
 }
 
 const mutations = {
-    [ADD_ADDRESS] (state, payload) {
+    [SET_ADDRESS] (state, payload) {
         state.userAddress = payload.data;
     }
 }
 
 const getters = {
-    userAddress: state => state.userAddress
+  userAddress: state => state.userAddress,
+  hasUserAddress: state => !!state.userAddress
 }
 
 const actions = {
-    newAddress({commit, state}, data={}) {
-        return Vue.$http(`globalUrl.newConsumer@{id:${data.id}}`, {data, method: 'post'})
+  getUserAddress({commit, state, rootState}, data={}) {
+    const id = rootState.userInfo.userInfo.id;
+
+    return Vue.$http(`user.getAddress@{id:${id}}`, {data, method: 'get'})
+      .then(v => {
+        if (!!v) {
+          let address = v;
+
+          commit(SET_ADDRESS, {data: address[0]});
+          return state.userAddress;
+        }
+      })
+  },
+  newAddress({commit, state}, data={}) {
+    const {id, ...other} = data;
+    return Vue.$http(`user.getAddress@{id:${data.id}}`, {data: other, method: 'post'})
             .then(v => {
                 if (!!v) {
                     let address = v;
-                    commit(ADD_ADDRESS, {data: address});
+                    commit(SET_ADDRESS, {data: address});
                     return state.userAddress;
                 }
             })
     },
     changeAddress({commit, state}, data={}) {
         const {id, ...other} = data;
-        return Vue.$http(`globalUrl.changeAddress@{id:${id}}`, {data: other, method: 'put'})
+        return Vue.$http(`address.info@{id:${id}}`, {data: other, method: 'put'})
             .then(v => {
                 if (!!v) {
                     console.log(v);
                     let address = v;
-                    commit(ADD_ADDRESS, {data: address});
+                    commit(SET_ADDRESS, {data: address});
                     return state.userAddress;
                 }
             })

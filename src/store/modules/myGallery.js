@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {SET_ORDER, SET_PAY_STATE, SET_LOGISTICS, SET_HISTORY_ORDER} from '../types'
+import {SET_ORDER, SET_LOGISTICS, SET_HISTORY_ORDER, SET_SHOW_LOGISTICS, SET_TOTAL} from '../types'
 
 const mapApiDataToView = (orderList) => {
   let dataList = [];
@@ -16,27 +16,31 @@ const state = {
   completedOrderList: [],
   orderList: [],
   logistics: {},
-  canPay: false
+  showLogistics: false,
+  total: 0
 }
 
 const mutations = {
   [SET_ORDER] (state, payload) {
     state.orderList = payload.data
   },
-  [SET_PAY_STATE] (state, canPay) {
-    state.canPay = canPay
-  },
   [SET_LOGISTICS] (state, payload) {
     state.logistics = payload.data
   },
+  [SET_SHOW_LOGISTICS] (state, showLogistics) {
+    state.showLogistics = showLogistics;
+  },
   [SET_HISTORY_ORDER] (state, payload) {
     state.completedOrderList = payload.data
+  },
+  [SET_TOTAL] (state, total) {
+    state.total = total
   }
 }
 
 const getters = {
   payGoodsList: state => state.payGoodsList,
-  canPay: state => state.canPay,
+  showLogistics: state => state.showLogistics,
   orderId: state => state.orderList[0] ? state.orderList[0].id : null,
   orderList: state => mapApiDataToView(state.orderList),
   completedOrderList: state => mapApiDataToView(state.completedOrderList),
@@ -45,11 +49,11 @@ const getters = {
     const status = ['4', '3', '2', '1']
     const flowTips = ['已收货', '发货中', '待发货', '广东省深圳市福田区新安街道']
 
-    const {logistice={}} = state;
+    const {logistics} = state;
 
     const data = flow.map((v, i) => {
-      return logistice[v] ? {
-        datetime: logistice[v],
+      return logistics[v] ? {
+        datetime: logistics[v].replace(/(T|\+.*)/g, ' '),
         status: status[i],
         label: flowTips[i]
       } : null
@@ -57,12 +61,13 @@ const getters = {
 
     return flow.length === data.length ? [
       ...({
-        label: logistice.consigneeAddress,
+        label: logistics.consigneeAddress,
         status: '5'
       }),
       ...data
     ] : data
-  }
+  },
+  orderTotal: state => state.total
 }
 
 const actions = {
@@ -72,9 +77,17 @@ const actions = {
     return Vue.$http(`mygallery.order@{id: ${id}}`, {data, method: 'get'})
   },
 
+  getUserOrderListWithState ({commit, dispatch, state}, data = {}) {
+    return dispatch('getUserOrderList', data)
+      .then(v => {
+        commit(SET_ORDER, {data: v});
+
+        return state.orderList;
+      })
+  },
   getOrderLogistics ({commit, state}, data={}) {
     const {id} = data;
-    return Vue.$http(`mygallery.orderlogistics@{id: id}`, {method: 'get'})
+    return Vue.$http(`mygallery.orderlogistics@{id: ${id}}`, {method: 'get'})
       .then(v =>{
         commit(SET_LOGISTICS, {data: v})
 
@@ -89,16 +102,24 @@ const actions = {
         return state.completedOrders
       });
   },
-  getCurrentOrders ({dispatch, commit, state}, data = {}) {
-    return dispatch('getUserOrderList', {status: ['WS','AS']})
+  getCurrentOrders ({dispatch, commit, state, getters}, data = {}) {
+    return dispatch('getUserOrderListWithState', {status: ['WS','AS']})
       .then(v => {
-        commit(SET_ORDER, {data: v});
-        commit(SET_PAY_STATE, v.length > 0 ? false : true);
+        commit(SET_SHOW_LOGISTICS, v.length > 0 ? true : false);
 
-        if(!state.canPay) return;
+        if(state.showLogistics) return;
 
-        return dispatch('getUserOrderList', {status: 'AT', 'orderBill.status': 'AE'});
+        return dispatch('getUserOrderListWithState', {status: 'AT', 'orderBill.status': 'AE'})
       })
+      .then(v => getters.orderList)
+  },
+  postUserOrder({commit, state, rootState}, data={}) {
+    const id = rootState.userInfo.userInfo.id;
+
+    return Vue.$http(`mygallery.order@{id: ${id}}`, {data, method: 'post'})
+  },
+  setTotal({commit, state}, total) {
+    commit(SET_TOTAL, total);
   }
 }
 

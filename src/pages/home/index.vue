@@ -71,7 +71,7 @@ export default {
           clickStatus: false,
           id: 0
         },{
-          name: "购物车",
+          name: "我的画廊",
           clickStatus: true,
           id: 1
         },{
