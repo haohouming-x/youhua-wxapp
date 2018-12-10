@@ -1,17 +1,17 @@
 <template>
   <div class="wrap">
     <div class="card">
-      <div class="card_title"> 瑙琥共享油画会员卡</div>
-      <div class="card_prc">现价：240元 <text class="card_prc_o">原价：300元</text> </div> 
-      <div class="card_info">自购买当日起90天内免费更换油画</div>
+      <div> {{member.name}}</div>
+      <div>{{member.presentPrice}}元 <text>{{member.originalPrice}}元</text> </div> 
+      <div>自购买当日起90天内免费更换油画</div>
     </div>
     <div class="just">
       <text>原价</text>
-      <text class="money">4555</text>
+      <text class="money">{{member.originalPrice}}</text>
     </div>
     <div class="just">
       <text>现金</text>
-      <text class="money">300</text>
+      <text class="money">{{member.presentPrice}}</text>
     </div>
     <div class="desc-box">
       <div class="chn_title">什么是共享油画季卡会员</div>
@@ -27,12 +27,13 @@
       </div>
     </div>
     <div class="bottom">
-      立即支付(<text class="money">199</text>)
+      立即支付(<text class="money">{{member.presentPrice}}</text>)
 
     </div>
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return{
@@ -40,14 +41,28 @@ export default {
         {url:'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: '无限换租',title:'租够再下一单',describe:'开通包月会员'},
         {url:'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: '无限换租',title:'租够再下一单',describe:'开通包月会员'},
         {url:'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: '无限换租',title:'租够再下一单',describe:'开通包月会员'}
-      ]
+      ],
+      member: {}
     }
   },
+  computed: {
+    ...mapGetters({
+      list: 'member/list'
+    })
+  },
   methods: {
-
+    ...mapActions({
+      getmember: 'member/getmarketings'
+    })
   },
   created() {
 
+  },
+  mounted () {
+    this.getmember().then((res) => {
+      this.member = this.list[0]
+      console.log(this.member)
+    })
   }
 }
 </script>
