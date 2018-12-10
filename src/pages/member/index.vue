@@ -26,7 +26,7 @@
         <div class="m_describe">{{item.describe}}</div>
       </div>
     </div>
-    <div class="bottom">
+    <div class="bottom" @click="paynow">
       立即支付(<text class="money">{{member.presentPrice}}</text>)
 
     </div>
@@ -47,13 +47,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      list: 'member/list'
+      list: 'member/list',
+      userInfo: 'userInfo/userInfo'
     })
   },
   methods: {
     ...mapActions({
-      getmember: 'member/getmarketings'
-    })
+      getmember: 'member/getmarketings',
+      paymember: 'pay/paymember'
+    }),
+    paynow () {
+      this.paymember(this.member.id, '1')
+    }
   },
   created() {
 
@@ -61,8 +66,13 @@ export default {
   mounted () {
     this.getmember().then((res) => {
       this.member = this.list[0]
+      console.log(res)
       console.log(this.member)
+      // return this.paymember(res[0].id, this.userInfo.id)
     })
+    // this.paymember({consumer_id: this.member.}).then((res) => {
+    //   console.log(res)
+    // })
   }
 }
 </script>

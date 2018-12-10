@@ -28,3 +28,5 @@ export const SET_HISTORY_ORDER = 'set_history_order';
 
 export const SET_TOTAL = 'set_order_TOTAL';
 export const SET_MARKETINGS = 'set_marketings';
+
+export const SET_MEMBER = 'set_member';
