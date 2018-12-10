@@ -24,3 +24,5 @@ export const SET_PAY_STATE = 'set_pay_state';
 export const SET_LOGISTICS = 'set_logistics';
 
 export const SET_HISTORY_ORDER = 'set_history_order';
+
+export const SET_MARKETINGS = 'set_marketings';
