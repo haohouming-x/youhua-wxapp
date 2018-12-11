@@ -21,7 +21,8 @@ module.exports = [
     path: '/pages/home/index',
     config: {
       navigationBarTitleText: '首页'
-    }
+    },
+    isCheckLogin: false
   },
   {
     path: '/pages/myGallery/index',
@@ -33,7 +34,8 @@ module.exports = [
     path: '/pages/goodsDetail/index',
     config: {
       navigationBarTitleText: '商品详情'
-    }
+    },
+    isCheckLogin: false
   },
   {
     path: '/pages/member/index',
@@ -45,13 +47,15 @@ module.exports = [
     path: '/pages/guide/index',
     config: {
       navigationBarTitleText: '新手指南'
-    }
+    },
+    isCheckLogin: false
   },
   {
     path: '/pages/commonRule/commonRule',
     config: {
       navigationBarTitleText: '常见规则'
-    }
+    },
+    isCheckLogin: false
   },
   {
     path: '/pages/pay/payed',
