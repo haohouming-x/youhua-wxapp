@@ -109,7 +109,7 @@ export default {
     rent() {
       let that =this
       let yemianids = []
-      if (this.userInfo.isMember) {
+      
         wx.getStorage({
             key: 'id',
             success (res) {
@@ -155,9 +155,9 @@ export default {
               }
             }
         })
-      } else {
-        this.$router.push('/pages/member/index')
-      }
+     
+        
+      
       
 
 
@@ -170,6 +170,9 @@ export default {
 
   },
   onShow() {
+    if (!this.userInfo.isMember) {
+      this.$router.push('/pages/member/index')
+    }
     // console.log(this.$route.query.id)
     this.yemianid = this.$route.query.id
     this.toGetGooods(this.$route.query.id)

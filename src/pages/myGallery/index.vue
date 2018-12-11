@@ -110,6 +110,11 @@ export default {
   created () {
 
   },
+  onShow() {
+    if (!this.userInfo.isMember) {
+      this.$router.push('/pages/member/index')
+    }
+  },
   mounted () {
     // for (var i = 0; i < this.showList.length; i++) {
     //   this.showList[i].date =  this.showList[i].dateTimes.substring(5, 10);
