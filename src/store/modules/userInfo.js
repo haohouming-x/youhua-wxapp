@@ -15,7 +15,7 @@ const mutations = {
 
 const getters = {
     userInfo: state => state.userInfo,
-    isNew: state => !state.userInfo.lastLoginAt
+    isNew: state => !state.userInfo.lastLoginAt || !state.userInfo.nickName
 }
 
 const actions = {

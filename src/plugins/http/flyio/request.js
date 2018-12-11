@@ -26,7 +26,13 @@ const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
 
     let _url = API[enumName] || '';
 
-    _url = params ? _url.replace(/\{([^{}]+)\}/g, (_, key) => params.match(key + "( ?):( ?)(.*)[( ?)}|,]")[3]) : _url;
+  _url = params ? _url.replace(/\{([^{}]+)\}/g, (_, key) => {
+    const match = params.match(`[( ?)\\{|( ?)\\,](${key}( ?):\\s*)(.*?)([( ?)\\,|( ?)\\}])`)
+
+    if(!match) throw Error(`${_url}参数解析缺少{${key}}的值`);
+
+    return match[3]
+  }) : _url;
 
     _url = Config.host + _url;
 

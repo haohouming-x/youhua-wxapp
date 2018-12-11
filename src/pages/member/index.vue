@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="card">
       <div> {{member.name}}</div>
-      <div>{{member.presentPrice}}元 <text>{{member.originalPrice}}元</text> </div> 
+      <div>{{member.presentPrice}}元 <text>{{member.originalPrice}}元</text> </div>
       <div>自购买当日起90天内免费更换油画</div>
     </div>
     <div class="just">
@@ -17,7 +17,7 @@
       <div class="chn_title">什么是共享油画季卡会员</div>
       <div class="eng_title">MEMBERSHIPLAN</div>
     </div>
-    
+
     <div class="planbox">
       <div v-for="(item, index) in planlist" :key="index">
         <div class="text-cen"><image class="plan-img" :src="item.url" /></div>
@@ -48,32 +48,32 @@ export default {
   computed: {
     ...mapGetters({
       list: 'member/list',
-      userInfo: 'userInfo/userInfo',
-      memberInfo: 'member/detail'
+      userInfo: 'userInfo/userInfo'
     })
   },
   methods: {
     ...mapActions({
       getmember: 'member/getmarketings',
       paymember: 'pay/paymember',
-      memberinfo: 'memeber/getmemberinfo'
+      memberinfo: 'member/getmemberinfo'
     }),
     paynow () {
-      this.paymember(this.member.id, this.userInfo.id).then((res) =>{
-      const {timestamp: timeStamp, ...other} = res;
-      wx.requestPayment({
-        ...other,
-        timeStamp,
-        success: (e) => {
-          console.log('ok')
-          console.log(e)
-          // this.memberInfo().then((res) => {
-          //   console.log(res)
-            
-          // })
-          }
+      this.paymember(this.member.id)
+        .then((res) =>{
+          const {timestamp: timeStamp, ...other} = res;
+
+          wx.requestPayment({
+            ...other,
+            timeStamp,
+            success: (e) => {
+              console.log('ok')
+              console.log(e)
+
+              this.memberinfo()
+                .then(v => this.$router.replace({path: '/pages/home/index'}))
+            }
+          })
         })
-      })
     }
   },
   created() {
@@ -84,13 +84,13 @@ export default {
       this.member = this.list[0]
       console.log(res)
       console.log(this.member)
-      this.memberInfo(this.userInfo.id).then((v) => {
+      this.memberinfo().then((v) => {
         console.log(v)
       })
       // return this.paymember(res[0].id, this.userInfo.id)
     })
 
-    
+
     // this.paymember({consumer_id: this.member.}).then((res) => {
     //   console.log(res)
     // })
@@ -102,14 +102,14 @@ export default {
     padding-top: 50rpx;
   }
   .card{
-    
+
     background: #34353c;
     width: 80%;
     margin: 0 auto;
     color: #fff;
-    padding: 20rpx ; 
+    padding: 20rpx ;
     border-radius: 20rpx;
-    
+
   }
   .planbox{
     display: flex;
@@ -122,7 +122,7 @@ export default {
   .plan-img{
     width: 100rpx;
     height: 100rpx;
-    
+
     border-radius: 50% ;
   }
   .text-cen{

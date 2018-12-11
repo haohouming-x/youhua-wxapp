@@ -64,8 +64,9 @@
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapGetters, mapActions, mapMutations } from 'vuex'
   import remoteImage from '@/components/remoteImage'
+  import {SET_PAY_GOODS} from '@/store/types'
 
   export default {
     components: {
@@ -155,6 +156,9 @@
                  success: () => {
                    console.log('ok')
                    wx.removeStorage({key: 'id'});
+                   this.setLocalGoods([]);
+
+                   this.$router.replace({path: '/pages/home/index'});
                  }
               })
             })
@@ -194,6 +198,9 @@
           this.toAddress();
         }
       },
+      ...mapMutations({
+        setLocalGoods: `goods/${SET_PAY_GOODS}`
+      }),
       ...mapActions({
         getAddress: 'address/getUserAddress',
         postUserOrder: 'myGallery/postUserOrder',

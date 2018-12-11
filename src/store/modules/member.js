@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import {SET_MARKETINGS} from '../types'
-import {SET_MEMBER_INFO} from '../types'
+import {SET_MARKETINGS, SET_MEMBER_INFO, SET_USER_INFO} from '../types'
+
 const state = {
   list: [],
   detail: {}
@@ -22,16 +22,23 @@ const actions = {
     return Vue.$http('member.marketings', {data, method: 'get'})
       .then(v => {
         commit(SET_MARKETINGS, {data: v})
+
         return state.list
-        console.log(state)
       })
   },
-  getmemberinfo({commit, state, id}, data = {}) {
-    return Vue.$http(`member.userinfo@{id: ${id}}`,{data, method: 'get'})
+  getmemberinfo({commit, state, rootState}, data = {}) {
+    const consumerid = rootState.userInfo.userInfo.id;
+
+    return Vue.$http(`member.userinfo@{id: ${consumerid}}`,{data, method: 'get'})
      .then(v => {
        commit(SET_MEMBER_INFO,{data: v})
+
+       commit(`userInfo/${SET_USER_INFO}`, {data: {
+         ...rootState.userInfo.userInfo,
+         member: v
+       }}, {root: true})
+
        return state.detail
-       console.log(state)
      })
   }
 }

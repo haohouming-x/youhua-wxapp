@@ -18,8 +18,10 @@ const actions = {
   order(context, orderId) {
     return Vue.$http(`pay.order@{id: ${orderId}}`, {method: 'post'})
   },
-  paymember(context, consumerid) {
-    return Vue.$http(`member.paymoney@{consumer_id: ${consumerid}}`, {method: 'post'})
+  paymember({rootState}, marketId) {
+    const consumerId = rootState.userInfo.userInfo.id;
+
+    return Vue.$http(`member.paymoney@{id: ${marketId}, consumer_id: ${consumerId}}`, {method: 'post'})
   }
 }
 
