@@ -2,9 +2,7 @@ import Vue from 'vue'
 import { SET_USER_INFO } from '../types'
 
 const state = {
-    userInfo: {},
-    isNew: false,
-    isMember: state => !!state.userInfo.member
+    userInfo: {}
 }
 
 const mutations = {
@@ -15,7 +13,8 @@ const mutations = {
 
 const getters = {
     userInfo: state => state.userInfo,
-    isNew: state => !state.userInfo.lastLoginAt || !state.userInfo.nickName
+    isNew: state => !state.userInfo.lastLoginAt || !state.userInfo.nickName,
+    isMember: state => !!state.userInfo.member
 }
 
 const actions = {

@@ -27,7 +27,7 @@
         <div class="text-ri">
           <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
           <!---<text class="delete" @click="delectStorage" v-if="item.status ==='AE'">删除</text>--->
-          <!--- <text class="return"  @click="delectStore" v-if="item.status === 'RT'">退还</text>--->
+          <!--- <text class="return"  @click="delectStore" v-if="item.status === 'RT'">退还</text>-->
         </div>
       </div>
     </div>

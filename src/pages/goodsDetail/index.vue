@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import carouselFigure from '@/components/carouselFigure'
 import remoteImage from '@/components/remoteImage'
 import wxParse from 'mpvue-wxparse'
@@ -68,6 +68,11 @@ export default {
       yemianid: '',
       imgUrls: []
     }
+  },
+  computed: {
+    ...mapGetters({
+      userInfo: 'userInfo/userInfo'
+    })
   },
   methods: {
     ...mapActions('goodsDetail', [
@@ -104,61 +109,57 @@ export default {
     rent() {
       let that =this
       let yemianids = []
-      wx.getStorage({
-        key: 'id',
-        success (res) {
-          console.log(res)
-          if  (res.data) {
-            yemianids = res.data
-            if(yemianids.indexOf(that.yemianid) !== -1 ) {
-              console.log('indexof')
-              wx.showToast({
-                title: '已添加',
-                icon: 'none',
-                duration: 2000
-              })
-            } else {
+      if (this.userInfo.isMember) {
+        wx.getStorage({
+            key: 'id',
+            success (res) {
+              console.log(res)
+              if  (res.data) {
+                yemianids = res.data
+                if(yemianids.indexOf(that.yemianid) !== -1 ) {
+                  console.log('indexof')
+                  wx.showToast({
+                    title: '已添加',
+                    icon: 'none',
+                    duration: 2000
+                  })
+                } else {
 
+                    yemianids.push(that.yemianid)
+                    console.log('yes')
+                    wx.setStorage({
+                      key:"id",
+                      data:yemianids
+                    })
+                    wx.showToast({
+                      title: '添加成功',
+                      icon: 'success',
+                      duration: 2000
+                    })
+                }
+              }
+            },
+            complete (res) {
+              if (res.errMsg === 'getStorage:fail data not found') {
+                //console.log('com')
                 yemianids.push(that.yemianid)
-                console.log('yes')
                 wx.setStorage({
                   key:"id",
                   data:yemianids
                 })
                 wx.showToast({
-                  title: '添加成功',
-                  icon: 'success',
-                  duration: 2000
-                })
+                    title: '添加成功',
+                    icon: 'success',
+                    duration: 2000
+                  })
+              }
             }
-          }
-        },
-        complete (res) {
-          if (res.errMsg === 'getStorage:fail data not found') {
-            //console.log('com')
-            yemianids.push(that.yemianid)
-            wx.setStorage({
-              key:"id",
-              data:yemianids
-            })
-            wx.showToast({
-                title: '添加成功',
-                icon: 'success',
-                duration: 2000
-              })
-          }
-        }
-    })
-//     wx.getStorageInfo({
-//   success (res) {
-//     console.log(res)
-//     if(res.id) {
-//       console.log('yes')
-//     } else{
+        })
+      } else {
+        this.$router.push('/pages/member/index')
+      }
+      
 
-//     }
-//   }
-// })
 
       //  this.$router.push('/pages/myGallery/index')
     }
