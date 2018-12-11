@@ -7,7 +7,7 @@ const state = {
 }
 
 const getters = {
-
+  canPay: (_, __, ___, rootGetters) => rootGetters['goods/waitPayList'].length > 0 || rootGetters['myGallery/orderList'].length > 0
 }
 
 const mutations = {

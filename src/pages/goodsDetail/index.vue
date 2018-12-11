@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userInfo: 'userInfo/userInfo'
+      isMember: 'userInfo/isMember'
     })
   },
   methods: {
@@ -107,9 +107,14 @@ export default {
       this.$router.push('/pages/home/index')
     },
     rent() {
+      if (!this.isMember) {
+        this.$router.push('/pages/member/index')
+        return ;
+      }
+
       let that =this
       let yemianids = []
-      
+
         wx.getStorage({
             key: 'id',
             success (res) {
@@ -155,10 +160,10 @@ export default {
               }
             }
         })
-     
-        
-      
-      
+
+
+
+
 
 
       //  this.$router.push('/pages/myGallery/index')
@@ -170,9 +175,6 @@ export default {
 
   },
   onShow() {
-    if (!this.userInfo.isMember) {
-      this.$router.push('/pages/member/index')
-    }
     // console.log(this.$route.query.id)
     this.yemianid = this.$route.query.id
     this.toGetGooods(this.$route.query.id)

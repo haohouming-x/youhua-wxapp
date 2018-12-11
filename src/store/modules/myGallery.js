@@ -39,7 +39,6 @@ const mutations = {
 }
 
 const getters = {
-  payGoodsList: state => state.payGoodsList,
   showLogistics: state => state.showLogistics,
   orderId: state => state.orderList[0] ? state.orderList[0].id : null,
   orderList: state => mapApiDataToView(state.orderList),

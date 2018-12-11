@@ -52,7 +52,7 @@
           </div>
         </div>
         <template v-if="!showLogistics">
-          <div class="inner_ri" @click="pay" v-if="orderTotal != 0">去结算</div>
+          <div class="inner_ri" @click="pay" v-if="canPay">去结算</div>
           <div class="inner_ri dis" v-else>去结算</div>
         </template>
         <div class="inner_ri dis" @click="logistics" v-else-if="!!orderId">物流中</div>
@@ -111,7 +111,7 @@ export default {
 
   },
   onShow() {
-    if (!this.userInfo.isMember) {
+    if (!this.isMember) {
       this.$router.push('/pages/member/index')
     }
   },
@@ -158,12 +158,14 @@ export default {
   },
   computed: {
     ...mapGetters({
+      isMember: 'userInfo/isMember',
       payGoods: 'goods/waitPayList',
       orderList: 'myGallery/orderList',
       logisticsInfo: 'myGallery/logisticsInfo',
       orderId: 'myGallery/orderId',
       orderTotal: 'myGallery/orderTotal',
-      showLogistics: 'myGallery/showLogistics'
+      showLogistics: 'myGallery/showLogistics',
+      canPay: 'pay/canPay'
     })
   },
   methods: {
@@ -201,7 +203,9 @@ export default {
                     data: newIds
                   })
 
-                  this.setLocalGoods(this.payGoods.filter(v=>v.id != id))
+                  this.setLocalGoods({
+                     data: this.payGoods.filter(v=>v.id != id)
+                  })
                 }
               }
             })

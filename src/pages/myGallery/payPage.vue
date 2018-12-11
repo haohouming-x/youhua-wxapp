@@ -84,7 +84,8 @@
         hasUserAddress: 'address/hasUserAddress',
         waitPayGoods: 'goods/waitPayList',
         orderTotal: 'myGallery/orderTotal',
-        orderList: 'myGallery/orderList'
+        orderList: 'myGallery/orderList',
+        canPay: 'pay/canPay'
       }),
       payOrders() {
         return this.orderList.map(v => ({
@@ -100,7 +101,7 @@
       }
     },
     onShow() {
-      if(this.orderTotal === 0) this.$router.push('/pages/myGallery/index')
+      if(!this.canPay) this.$router.push('/pages/myGallery/index')
     },
     mounted() {
       this.getAddress().then(v => {

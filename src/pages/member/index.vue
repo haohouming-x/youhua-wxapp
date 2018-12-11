@@ -48,7 +48,7 @@ export default {
   computed: {
     ...mapGetters({
       list: 'member/list',
-      userInfo: 'userInfo/userInfo'
+      isMember: 'userInfo/isMember'
     })
   },
   methods: {
@@ -58,6 +58,15 @@ export default {
       memberinfo: 'member/getmemberinfo'
     }),
     paynow () {
+      if(this.isMember) {
+         wx.showToast({
+           title: '已为会员！',
+           icon: 'none',
+           duration: 2000
+         })
+         return;
+      }
+
       this.paymember(this.member.id)
         .then((res) =>{
           const {timestamp: timeStamp, ...other} = res;

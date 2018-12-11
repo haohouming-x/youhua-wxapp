@@ -60,7 +60,7 @@
         this.changeUserInfo({
           id, nickName, image, sex
         }).then(v => {
-          this.$router.push({path: '/pages/home/index'});
+          this.$router.replace({path: '/pages/home/index'});
         })
       }
     }

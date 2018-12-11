@@ -64,6 +64,8 @@ const actions = {
       });
   },
   getPayGoods ({commit, state}, data = {}) {
+    if(!(data.id && data.id.length > 0)) return Promise.resolve([]);
+
     return Vue.$http('mygallery.goods', {data, method: 'get'})
       .then(v => {
         commit(SET_PAY_GOODS,{data: v})
