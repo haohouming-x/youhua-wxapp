@@ -48,16 +48,32 @@ export default {
   computed: {
     ...mapGetters({
       list: 'member/list',
-      userInfo: 'userInfo/userInfo'
+      userInfo: 'userInfo/userInfo',
+      memberInfo: 'member/detail'
     })
   },
   methods: {
     ...mapActions({
       getmember: 'member/getmarketings',
-      paymember: 'pay/paymember'
+      paymember: 'pay/paymember',
+      memberinfo: 'memeber/getmemberinfo'
     }),
     paynow () {
-      this.paymember(this.member.id, '1')
+      this.paymember(this.member.id, this.userInfo.id).then((res) =>{
+      const {timestamp: timeStamp, ...other} = res;
+      wx.requestPayment({
+        ...other,
+        timeStamp,
+        success: (e) => {
+          console.log('ok')
+          console.log(e)
+          // this.memberInfo().then((res) => {
+          //   console.log(res)
+            
+          // })
+          }
+        })
+      })
     }
   },
   created() {
@@ -68,8 +84,13 @@ export default {
       this.member = this.list[0]
       console.log(res)
       console.log(this.member)
+      this.memberInfo(this.userInfo.id).then((v) => {
+        console.log(v)
+      })
       // return this.paymember(res[0].id, this.userInfo.id)
     })
+
+    
     // this.paymember({consumer_id: this.member.}).then((res) => {
     //   console.log(res)
     // })

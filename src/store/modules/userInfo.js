@@ -3,7 +3,8 @@ import { SET_USER_INFO } from '../types'
 
 const state = {
     userInfo: {},
-    isNew: false
+    isNew: false,
+    isMember: state => !!state.userInfo.member
 }
 
 const mutations = {

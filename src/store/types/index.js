@@ -30,3 +30,5 @@ export const SET_TOTAL = 'set_order_TOTAL';
 export const SET_MARKETINGS = 'set_marketings';
 
 export const SET_MEMBER = 'set_member';
+
+export const SET_MEMBER_INFO = 'set_member_info';
