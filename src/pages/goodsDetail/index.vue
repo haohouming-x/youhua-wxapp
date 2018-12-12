@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="marleft title">
-      押金规则
+      押金规则a
     </div>
     <div class="rule-content">押金规则内容</div>
       <div class="prod-content">
