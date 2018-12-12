@@ -31,7 +31,6 @@ import { mapGetters, mapActions } from 'vuex'
 import carouselFigure from '@/components/carouselFigure'
 import normalFooter from '@/components/normalFooter'
 import remoteImage from '@/components/remoteImage'
-import config from '@/plugins/http/flyio/config'
 
 export default {
   components: {
@@ -93,8 +92,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userInfo: 'userInfo/userInfo',
-      isNew: 'userInfo/isNew',
       banners: 'banner/list',
       classifies: 'classify/list',
       goods: 'goods/currentList'
@@ -103,18 +100,7 @@ export default {
       return this.banners.map(v => ({url: v.image, title: v.name}))
     }
   },
-  created () {},
   mounted () {
-    this.userLogin().then(v => {
-      if(this.isNew) {
-        this.$router.push({path: '/pages/home/login'});
-        // shouquan().then(v => {
-        //      const sex = v.xxx;
-        //      const nickName = v.xxxx;
-        //      this.changeUserInfo({}, {sex, nickName})
-        //   });
-      }
-    });
     this.getBannerList();
     this.getClassifyListAndGoods({}, this.selectedClassifyIndex)
         .then(v => {
@@ -126,7 +112,7 @@ export default {
 
  created () {
   //  this.getbanners()
-
+  console.log(this.$options)
 
  },
 
@@ -135,8 +121,7 @@ export default {
      getBannerList: 'banner/getBannerList',
      getClassifyListAndGoods: 'classify/getClassifyListAndGoods',
     //  getGoodsByClassifyId: 'goods/getGoodsByClassifyId'
-    getGoodsListByClassifyId: 'goods/getGoodsListByClassifyId',
-      userLogin: 'userInfo/userLogin'
+    getGoodsListByClassifyId: 'goods/getGoodsListByClassifyId'
    }),
    handleClassify (item){
     this.headline = item.name;

@@ -1,13 +1,26 @@
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   mpType: 'app',
+  computed: {
+    ...mapGetters({
+      userInfo: 'userInfo/userInfo',
+      isNew: 'userInfo/isNew',
+    })
+  },
+  methods: {
+    ...mapActions({
+      userLogin: 'userInfo/userLogin'
+    })
+  },
   created () {
-    // 调用API从本地缓存中获取数据
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
-    console.log('app created and cache logs by setStorageSync')
+    // 登录
+    this.userLogin().then(v => {
+      if(this.isNew) {
+        this.$router.push({path: '/pages/home/login', reLaunch: true});
+      }
+    });
   }
 }
 </script>

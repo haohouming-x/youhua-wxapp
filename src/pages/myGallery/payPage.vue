@@ -66,7 +66,6 @@
 <script>
   import { mapGetters, mapActions, mapMutations } from 'vuex'
   import remoteImage from '@/components/remoteImage'
-  import {SET_PAY_GOODS} from '@/store/types'
 
   export default {
     components: {
@@ -101,7 +100,11 @@
       }
     },
     onShow() {
-      if(!this.canPay) this.$router.push('/pages/myGallery/index')
+      if(!this.canPay){
+        this.$router.push('/pages/myGallery/index')
+        return;
+      }
+
     },
     mounted() {
       this.getAddress().then(v => {
@@ -148,6 +151,7 @@
               return this.payOrder(v.id)
             })
             .then(res => {
+
               // res 为jssdk需要的参数
               const {timestamp: timeStamp, ...other} = res;
 
@@ -157,9 +161,9 @@
                  success: () => {
                    console.log('ok')
                    wx.removeStorage({key: 'id'});
-                   this.setLocalGoods([]);
+                   this.afterOrderPay();
 
-                   this.$router.replace({path: '/pages/home/index'});
+                   this.$router.push({path: '/pages/pay/payed', reLaunch: true});
                  }
               })
             })
@@ -199,12 +203,10 @@
           this.toAddress();
         }
       },
-      ...mapMutations({
-        setLocalGoods: `goods/${SET_PAY_GOODS}`
-      }),
       ...mapActions({
         getAddress: 'address/getUserAddress',
         postUserOrder: 'myGallery/postUserOrder',
+        afterOrderPay: 'pay/afterOrderPay',
         payOrder: 'pay/order'
       }),
     }

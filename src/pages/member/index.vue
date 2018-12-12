@@ -88,7 +88,7 @@ export default {
   created() {
 
   },
-  mounted () {
+  onShow() {
     this.getmember().then((res) => {
       this.member = this.list[0]
       console.log(res)
@@ -98,8 +98,8 @@ export default {
       })
       // return this.paymember(res[0].id, this.userInfo.id)
     })
-
-
+  },
+  mounted () {
     // this.paymember({consumer_id: this.member.}).then((res) => {
     //   console.log(res)
     // })

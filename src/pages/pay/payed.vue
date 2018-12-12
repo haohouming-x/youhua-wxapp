@@ -4,13 +4,13 @@
       <img src="../../assets/images/pay-success.png" alt="">
     </div>
     <div class="pay_text">支付成功</div>
-    <div class="detail_btn">订单详情</div>
-    <div class="back_btn">返回首页</div>
+    <div class="detail_btn" @click="$router.push({path: '/pages/myGallery/index'})">订单详情</div>
+    <div class="back_btn" @click="$router.push({path: '/pages/home/index', reLaunch: true})">返回首页</div>
   </div>
 </template>
 
 <script>
-  
+
 </script>
 
 <style lang='postcss'>

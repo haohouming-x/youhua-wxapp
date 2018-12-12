@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import {SET_TOTAL} from '../types'
-import {SET_MEMBER} from '../types'
+import {SET_TOTAL, SET_PAY_GOODS} from '../types'
 
 const state = {
 
@@ -22,6 +21,10 @@ const actions = {
     const consumerId = rootState.userInfo.userInfo.id;
 
     return Vue.$http(`member.paymoney@{id: ${marketId}, consumer_id: ${consumerId}}`, {method: 'post'})
+  },
+  afterOrderPay({commit}) {
+    commit(`goods/${SET_PAY_GOODS}`, {data: []}, {root: true});
+    commit(`myGallery/${SET_TOTAL}`, 0, {root: true});
   }
 }
 

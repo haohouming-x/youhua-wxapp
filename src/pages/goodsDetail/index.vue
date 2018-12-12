@@ -50,20 +50,12 @@ export default {
   },
   data() {
     return{
-      article: '<div>htmllllllllllllllllllllllll</div>',
+      article: '',
       detail: {
-        // url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',
-        url: '',
-        name: 'the last supper',
-        size: '60cm*60cm',
-        markerPrice: '200',
-        salesVolume: '50',
-        deposit: '100'
+
       },
       recommed: [
-        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:0},
-        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:1},
-        {url: 'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: 'thelastsupper',title:'最后的晚餐',id:2}
+
       ],
       yemianid: '',
       imgUrls: []
@@ -160,29 +152,18 @@ export default {
               }
             }
         })
-
-
-
-
-
-
       //  this.$router.push('/pages/myGallery/index')
     }
   },
   created() {
-
     // this.toGetGooods(this.$route.query.id)
 
   },
-  onShow() {
-    // console.log(this.$route.query.id)
-    this.yemianid = this.$route.query.id
-    this.toGetGooods(this.$route.query.id)
-  },
   mounted(){
    // console.log(this.$route.query.id)
-   // this.yemianid = this.$route.query.id
-   // this.toGetGooods(this.$route.query.id)
+
+   this.yemianid = this.$route.query.id
+   this.toGetGooods(this.yemianid)
   }
 }
 </script>

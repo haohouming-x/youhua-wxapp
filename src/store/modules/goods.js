@@ -64,24 +64,27 @@ const actions = {
       });
   },
   getPayGoods ({commit, state}, data = {}) {
-    if(!(data.id && data.id.length > 0)) return Promise.resolve([]);
+    let promise = null;
+    if(!(data.id && data.id.length > 0))
+      promise = Promise.resolve([])
+    else
+      promise = Vue.$http('mygallery.goods', {data, method: 'get'})
 
-    return Vue.$http('mygallery.goods', {data, method: 'get'})
-      .then(v => {
-        commit(SET_PAY_GOODS,{data: v})
+    return promise.then(v => {
+      commit(SET_PAY_GOODS,{data: v})
 
-        return state.waitPayList
-      })
+      return state.waitPayList
+    })
   },
   getGoodsById({commit, state}, data={}) {
     const {id} = data;
 
     return Vue.$http(`gooddetail.goods@{id: ${id}}`, {method: 'get'})
-      .then(v => {
-        commit(SET_CURRENT_GOODS, {data: v});
+          .then(v => {
+            commit(SET_CURRENT_GOODS, {data: v});
 
-        return state.current;
-      });
+            return state.current;
+          });
   }
 }
 
