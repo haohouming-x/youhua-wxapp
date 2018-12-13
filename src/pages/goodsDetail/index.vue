@@ -163,7 +163,7 @@ export default {
               }
             },
             complete (res) {
-              if (res.errMsg === 'getStorage:fail data not found') {
+              if (res.errMsg === 'getStorage:fail data not found' || res.errMsg === 'getStorage:fail:data not found') {
                 //console.log('com')
                 yemianids.push(that.yemianid)
                 wx.setStorage({
