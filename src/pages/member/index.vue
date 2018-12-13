@@ -48,7 +48,7 @@ export default {
   computed: {
     ...mapGetters({
       list: 'member/list',
-      isMember: 'userInfo/isMember'
+      isValidMember: 'userInfo/isValidMember'
     })
   },
   methods: {
@@ -58,7 +58,7 @@ export default {
       memberinfo: 'member/getmemberinfo'
     }),
     paynow () {
-      if(this.isMember) {
+      if(this.isValidMember) {
          wx.showToast({
            title: '已为会员！',
            icon: 'none',

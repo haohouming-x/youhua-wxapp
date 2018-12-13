@@ -113,7 +113,7 @@ export default {
 
   },
   onShow() {
-    if (!this.isMember) {
+    if (!this.isValidMember) {
       this.$router.push('/pages/member/index')
     }
   },
@@ -138,7 +138,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isMember: 'userInfo/isMember',
+      isValidMember: 'userInfo/isValidMember',
       payGoods: 'goods/waitPayList',
       orderList: 'myGallery/orderList',
       logisticsInfo: 'myGallery/logisticsInfo',

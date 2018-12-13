@@ -17,6 +17,7 @@ const math = function(number) {
 
 export default {
   install(Vue) {
+    Vue.$math = math;
     Vue.prototype.$math = math;
   }
 }

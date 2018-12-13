@@ -2,7 +2,7 @@
 
     <div>
       <carousel-figure :swiperImgs="imgUrls"></carousel-figure>
-      <div v-if="!isMember">
+      <div v-if="!isValidMember">
         <div class=" memberbox" @click="beMember"></div>
       </div>
       <div class="classifybox">
@@ -40,7 +40,7 @@ export default {
   },
   data () {
     return {
-      isMember: false,
+      // isMember: false,
       // imgUrls: [
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"},
       //   {url: "http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg"}
@@ -92,6 +92,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      isValidMember: 'userInfo/isValidMember',
       banners: 'banner/list',
       classifies: 'classify/list',
       goods: 'goods/currentList'

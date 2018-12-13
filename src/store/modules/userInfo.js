@@ -14,7 +14,10 @@ const mutations = {
 const getters = {
     userInfo: state => state.userInfo,
     isNew: state => !state.userInfo.lastLoginAt || !state.userInfo.nickName,
-    isMember: state => !!state.userInfo.member
+    isMember: state => !!state.userInfo.member,
+    isValidMember: (state, getters) => {
+      return getters.isMember && Vue.$date().diff(state.userInfo.member.expireAt) <= 0
+    }
 }
 
 const actions = {

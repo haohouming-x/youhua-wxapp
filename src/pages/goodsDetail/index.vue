@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isMember: 'userInfo/isMember'
+      isValidMember: 'userInfo/isValidMember'
     })
   },
   methods: {
@@ -125,7 +125,7 @@ export default {
       this.$router.push('/pages/home/index')
     },
     rent() {
-      if (!this.isMember) {
+      if (!this.isValidMember) {
         this.$router.push('/pages/member/index')
         return ;
       }
