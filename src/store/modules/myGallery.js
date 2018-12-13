@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {SET_ORDER, SET_LOGISTICS, SET_HISTORY_ORDER, SET_SHOW_LOGISTICS, SET_TOTAL} from '../types'
+import {SET_ORDER, SET_LOGISTICS, SET_HISTORY_ORDER, SET_SHOW_LOGISTICS} from '../types'
 
 const mapApiDataToView = (orderList) => {
   let dataList = [];
@@ -32,10 +32,19 @@ const mutations = {
   },
   [SET_HISTORY_ORDER] (state, payload) {
     state.completedOrderList = payload.data
-  },
-  [SET_TOTAL] (state, total) {
-    state.total = total
   }
+}
+
+const getOrderTotal = (orders) => {
+  return orders.reduce((acc, v) => {
+    // if(v.status && v.status==='AE'){
+    //   acc += v['depositPrice']
+    // }
+    // if (v.status && v.status ==='RT') {
+    acc -= v['depositPrice']
+    // }
+    return acc
+  }, 0)
 }
 
 const getters = {
@@ -66,7 +75,12 @@ const getters = {
       ...data
     ] : data
   },
-  orderTotal: state => state.total
+  orderTotal: (_, getters, ___, rootGetters) => {
+    let total = rootGetters['goods/waitPayList'].reduce((acc, v) =>  acc + v['depositPrice'], 0);
+    total += getOrderTotal(getters.orderList);
+
+    return total;
+  }
 }
 
 const actions = {
@@ -116,9 +130,6 @@ const actions = {
     const id = rootState.userInfo.userInfo.id;
 
     return Vue.$http(`mygallery.order@{id: ${id}}`, {data, method: 'post'})
-  },
-  setTotal({commit, state}, total) {
-    commit(SET_TOTAL, total);
   }
 }
 

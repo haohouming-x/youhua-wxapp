@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {SET_TOTAL, SET_PAY_GOODS} from '../types'
+import {SET_PAY_GOODS} from '../types'
 
 const state = {
 
@@ -24,7 +24,6 @@ const actions = {
   },
   afterOrderPay({commit}) {
     commit(`goods/${SET_PAY_GOODS}`, {data: []}, {root: true});
-    commit(`myGallery/${SET_TOTAL}`, 0, {root: true});
   }
 }
 

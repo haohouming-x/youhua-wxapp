@@ -90,6 +90,8 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import remoteImage from '@/components/remoteImage'
 import {SET_PAY_GOODS} from '@/store/types'
 
+
+
 export default {
   components: {
     remoteImage
@@ -120,38 +122,16 @@ export default {
     //   this.showList[i].date =  this.showList[i].dateTimes.substring(5, 10);
     //   this.showList[i].time =  this.showList[i].dateTimes.substring(11, 16);
     // }
-
-    const getOrderTotal = (orders) => {
-      return orders.reduce((acc, v) => {
-        // if(v.status && v.status==='AE'){
-        //   acc += v['depositPrice']
-        // }
-        // if (v.status && v.status ==='RT') {
-          acc -= v['depositPrice']
-        // }
-        return acc
-      }, 0)
-    }
-
     wx.getStorage({
       key: 'id',
       success: (res) => {
         this.getCurrentData(res.data)
-          .then(([payGoods, orders]) => {
-              // orders === getters.orderList
-              let total = payGoods.reduce((acc, v) =>  acc + v['depositPrice'], 0)
-              total += getOrderTotal(orders);
-
-              this.setTotal(total);
-          })
           .catch(v => console.log(v))
       },
       fail: (res) => {
         if(res.errMsg === 'getStorage:fail data not found') {
           this.getCurrentOrders()
-            .then(orders => {
-              this.setTotal(getOrderTotal(orders));
-            })
+            .catch(v => console.log(v))
         }
       }
     })
@@ -195,9 +175,7 @@ export default {
               success: (res) => {
                 if(res.data) {
                   const newIds = res.data.filter(v => v != id);
-                  console.log(res.data)
-                  console.log(id);
-                  console.log(newIds);
+
                   wx.setStorage({
                     key:"id",
                     data: newIds
