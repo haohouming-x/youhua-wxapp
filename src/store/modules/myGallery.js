@@ -12,6 +12,19 @@ const mapApiDataToView = (orderList) => {
   return dataList;
 }
 
+const getOrderTotal = (orders) => {
+  return orders.reduce((acc, v) => {
+    // if(v.status && v.status==='AE'){
+    //   acc += v['depositPrice']
+    // }
+    // if (v.status && v.status ==='RT') {
+    acc -= v['depositPrice']
+    // }
+    return acc
+  }, 0)
+}
+
+
 const state = {
   completedOrderList: [],
   orderList: [],
@@ -33,18 +46,6 @@ const mutations = {
   [SET_HISTORY_ORDER] (state, payload) {
     state.completedOrderList = payload.data
   }
-}
-
-const getOrderTotal = (orders) => {
-  return orders.reduce((acc, v) => {
-    // if(v.status && v.status==='AE'){
-    //   acc += v['depositPrice']
-    // }
-    // if (v.status && v.status ==='RT') {
-    acc -= v['depositPrice']
-    // }
-    return acc
-  }, 0)
 }
 
 const getters = {
@@ -79,7 +80,7 @@ const getters = {
     let total = rootGetters['goods/waitPayList'].reduce((acc, v) =>  acc + v['depositPrice'], 0);
     total += getOrderTotal(getters.orderList);
 
-    return total;
+    return Vue.$math(total).toFixed(2);
   }
 }
 
@@ -120,9 +121,39 @@ const actions = {
       .then(v => {
         commit(SET_SHOW_LOGISTICS, v.length > 0 ? true : false);
 
-        if(state.showLogistics) return;
+        if(state.showLogistics) return false;
 
-        return dispatch('getUserOrderListWithState', {status: 'AT', 'orderBill.status': 'AE'})
+        return dispatch('getUserOrderList', {status: 'AT', 'orderBill.status': ['AE', 'RT']})
+      })
+      .then(res => {
+        if(res === false) return;
+
+        let arr = [];
+
+        const newMeta = res.reduce((acc, v) => {
+          v.orderBill = v.orderBill.reduce((billAcc, bill) => {
+            if(bill.status === 'RT') arr.push(bill);
+            else if(bill.status === "AE") billAcc.push(bill);
+
+            return billAcc;
+          }, []);
+
+          if(v.orderBill.length > 0) acc.push(v);
+
+          return acc;
+        }, []).filter(v => {
+          v.orderBill = v.orderBill.filter(bill => {
+            const mLength = arr.length;
+
+            arr = arr.filter(a => a.goods.id !== bill.goods.id && a.depositPrice !== bill.depositPrice);
+
+            return mLength === arr.length;
+          });
+
+          return v.orderBill.length > 0;
+        })
+
+        commit(SET_ORDER, {data: newMeta});
       })
       .then(v => getters.orderList)
   },

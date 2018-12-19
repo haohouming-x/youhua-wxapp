@@ -151,6 +151,7 @@
               return this.payOrder(v.id)
             })
             .then(res => {
+              if(!res) this.$router.push({path: '/pages/pay/payed', reLaunch: true});
 
               // res 为jssdk需要的参数
               const {timestamp: timeStamp, ...other} = res;

@@ -22,7 +22,7 @@
       <div class="dis-flex">
         <div>
           <div class="marbot">{{item.goods && item.goods.name}}</div>
-          <div>{{item.longSize}}*{{item.goods && item.goods.wideSize}}</div>
+          <div>{{item.goods && item.goods.longSize}}*{{item.goods && item.goods.wideSize}}</div>
         </div>
         <div class="text-ri">
           <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
@@ -129,7 +129,7 @@ export default {
           .catch(v => console.log(v))
       },
       fail: (res) => {
-        if(res.errMsg === 'getStorage:fail data not found') {
+        if(res.errMsg === 'getStorage:fail data not found' || res.errMsg === 'getStorage:fail:data not found') {
           this.getCurrentOrders()
             .catch(v => console.log(v))
         }
