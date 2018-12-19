@@ -6,7 +6,7 @@
           {{ item.goods && item.goods.name }}
           <div class="times">{{ item.createdAt }}</div>
         </div>
-        <remote-image mode="widthFix" :src="item.goods ? item.goods.image : ''" />
+        <remote-image mode="widthFix" className="img" :src="item.goods ? item.goods.image : ''" />
       </li>
     </ul>
     <ul class="hr_list" v-else>
@@ -76,7 +76,7 @@ import remoteImage from '@/components/remoteImage'
     bottom: 20rpx;
   }
 
-  .hr_list .hr_item img {
+  .hr_list .hr_item .img {
     width: 100%;
     height: 480rpx;
     object-fit: cover;

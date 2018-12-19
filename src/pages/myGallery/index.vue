@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class="item" v-for="(item, index) in orderList" :key="index">
+    <div class="item" v-for="(item, index) in myOrderList" :key="index">
       <div class="item-imgbox">
         <remote-image mode="widthFix" className="item-image" :src="item.goods ? item.goods.image : ''" />
       </div>
@@ -27,7 +27,10 @@
         <div class="text-ri">
           <div class="marbot"> 退还押金:<text class="item-amount">{{item.depositPrice}}</text></div>
           <!---<text class="delete" @click="delectStorage" v-if="item.status ==='AE'">删除</text>--->
-          <!--- <text class="return"  @click="delectStore" v-if="item.status === 'RT'">退还</text>-->
+          <template v-if="!showLogistics">
+            <text class="delete"  @click="cancelReturn(item.id)" v-if="item.willReturn">取消退还</text>
+            <text class="return"  @click="willReturn(item.id)" v-else>退还</text>
+          </template>
         </div>
       </div>
     </div>
@@ -141,12 +144,17 @@ export default {
       isValidMember: 'userInfo/isValidMember',
       payGoods: 'goods/waitPayList',
       orderList: 'myGallery/orderList',
+      payOrderIds: 'myGallery/payOrderIds',
       logisticsInfo: 'myGallery/logisticsInfo',
       orderId: 'myGallery/orderId',
       orderTotal: 'myGallery/orderTotal',
       showLogistics: 'myGallery/showLogistics',
       canPay: 'pay/canPay'
-    })
+    }),
+    myOrderList() {
+      return this.payOrderIds.length <= 0 ? this.orderList : this.orderList
+        .map(v => ({...v, willReturn: this.payOrderIds.indexOf(v.id) > -1 ? true : false}))
+    }
   },
   methods: {
     ...mapMutations({
@@ -155,7 +163,7 @@ export default {
     ...mapActions({
       getLocalGoods: 'goods/getPayGoods',
       getCurrentOrders: 'myGallery/getCurrentOrders',
-      setTotal: 'myGallery/setTotal',
+      setCancelIds: 'myGallery/setCancelIds',
       getOrderLogistics: 'myGallery/getOrderLogistics'
     }),
     toHistoryPage() {
@@ -192,7 +200,28 @@ export default {
           }
         }
       })
-
+    },
+    cancelReturn(id) {
+        wx.showModal({
+          title: '提示',
+          content: '是否确认取消退还',
+          success:(res) => {
+             if (res.confirm) {
+                this.setCancelIds({isCancel: true, id})
+             }
+          }
+        })
+    },
+    willReturn(id) {
+        wx.showModal({
+          title: '提示',
+          content: '是否确认退还',
+          success:(res) => {
+             if (res.confirm) {
+                this.setCancelIds({isCancel: false, id})
+             }
+          }
+        })
     },
     logistics() {
       this.getOrderLogistics({id: this.orderId})

@@ -1,5 +1,9 @@
 import Vue from 'vue'
-import {SET_ORDER, SET_LOGISTICS, SET_HISTORY_ORDER, SET_SHOW_LOGISTICS} from '../types'
+import {
+  SET_ORDER, SET_HISTORY_ORDER,
+  SET_LOGISTICS, SET_SHOW_LOGISTICS,
+  SET_CANCEL_PAYIDS, SET_APPEND_PAYIDS
+} from '../types'
 
 const mapApiDataToView = (orderList) => {
   let dataList = [];
@@ -28,6 +32,7 @@ const getOrderTotal = (orders) => {
 const state = {
   completedOrderList: [],
   orderList: [],
+  cancelPayOrderIds: [],
   logistics: {},
   showLogistics: false,
   total: 0
@@ -35,7 +40,7 @@ const state = {
 
 const mutations = {
   [SET_ORDER] (state, payload) {
-    state.orderList = payload.data
+    state.orderList = payload.data;
   },
   [SET_LOGISTICS] (state, payload) {
     state.logistics = payload.data
@@ -45,12 +50,20 @@ const mutations = {
   },
   [SET_HISTORY_ORDER] (state, payload) {
     state.completedOrderList = payload.data
+  },
+  [SET_CANCEL_PAYIDS] (state, id) {
+    state.cancelPayOrderIds.push(id)
+  },
+  [SET_APPEND_PAYIDS] (state, id) {
+    state.cancelPayOrderIds.splice(state.cancelPayOrderIds.indexOf(id), 1)
   }
 }
 
 const getters = {
   showLogistics: state => state.showLogistics,
   orderId: state => state.orderList[0] ? state.orderList[0].id : null,
+  payOrderIds: (state, getters) => state.showLogistics ? [] :
+      getters.orderList.filter(v => state.cancelPayOrderIds.indexOf(v.id) < 0).map(v => v.id),
   orderList: state => mapApiDataToView(state.orderList),
   completedOrderList: state => mapApiDataToView(state.completedOrderList),
   logisticsInfo: state => {
@@ -62,7 +75,7 @@ const getters = {
 
     const data = flow.map((v, i) => {
       return logistics[v] ? {
-        datetime: logistics[v].replace(/(T|\+.*)/g, ' '),
+        datetime: logistics[v],
         status: status[i],
         label: flowTips[i]
       } : null
@@ -161,6 +174,15 @@ const actions = {
     const id = rootState.userInfo.userInfo.id;
 
     return Vue.$http(`mygallery.order@{id: ${id}}`, {data, method: 'post'})
+  },
+  setCancelIds({commit, state}, data={}) {
+    const {isCancel, id} = data;
+
+    if(isCancel) {
+      commit(SET_CANCEL_PAYIDS, id)
+    }else {
+      commit(SET_APPEND_PAYIDS, id)
+    }
   }
 }
 

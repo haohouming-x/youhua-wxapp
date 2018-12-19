@@ -25,7 +25,7 @@
           </div>
           <div class="info_status">待寄送</div>
         </li>
-        <li v-for = "item in orderList" :key = "item">
+        <li v-for = "item in myOrderList" :key = "item">
           <div class="img_box">
             <remote-image mode="widthFix" className="item-image" :src="item.goods ? item.goods.image : ''" />
           </div>
@@ -84,10 +84,14 @@
         waitPayGoods: 'goods/waitPayList',
         orderTotal: 'myGallery/orderTotal',
         orderList: 'myGallery/orderList',
+        payOrderIds: 'myGallery/payOrderIds',
         canPay: 'pay/canPay'
       }),
+      myOrderList() {
+        return this.orderList.filter(v => this.payOrderIds.indexOf(v.id) > -1)
+      },
       payOrders() {
-        return this.orderList.map(v => ({
+        return this.myOrderList.map(v => ({
           status: 'RT',
           goodsId: v.goods.id
         }))
