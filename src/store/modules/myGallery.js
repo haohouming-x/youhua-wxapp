@@ -66,6 +66,7 @@ const getters = {
       getters.orderList.filter(v => state.cancelPayOrderIds.indexOf(v.id) < 0).map(v => v.id),
   orderList: state => mapApiDataToView(state.orderList),
   completedOrderList: state => mapApiDataToView(state.completedOrderList),
+  payOrderList: (state, getters) => getters.orderList.filter(v => getters.payOrderIds.indexOf(v.id) > -1),
   logisticsInfo: state => {
     const flow = ['tookAt', 'sentAt', 'paidAt', 'createdAt'];
     const status = ['4', '3', '2', '1']
@@ -91,7 +92,7 @@ const getters = {
   },
   orderTotal: (_, getters, ___, rootGetters) => {
     let total = rootGetters['goods/waitPayList'].reduce((acc, v) =>  acc + v['depositPrice'], 0);
-    total += getOrderTotal(getters.orderList);
+    total += getOrderTotal(getters.payOrderList);
 
     return Vue.$math(total).toFixed(2);
   }

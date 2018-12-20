@@ -29,7 +29,7 @@ const actions = {
   getmemberinfo({commit, state, rootState}, data = {}) {
     const consumerid = rootState.userInfo.userInfo.id;
 
-    return Vue.$http(`member.userinfo@{id: ${consumerid}}`,{data, method: 'get'})
+    return Vue.$http(`member.userinfo@{id: ${consumerid}}`,{data, method: 'get'}, {isErrorDefaultTip: false})
      .then(v => {
        commit(SET_MEMBER_INFO,{data: v})
 
