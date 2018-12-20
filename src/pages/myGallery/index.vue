@@ -18,6 +18,7 @@
     <div class="item" v-for="(item, index) in myOrderList" :key="index">
       <div class="item-imgbox">
         <remote-image mode="widthFix" className="item-image" :src="item.goods ? item.goods.image : ''" />
+        <div class="label">已租借</div>
       </div>
       <div class="dis-flex">
         <div>
@@ -121,10 +122,6 @@ export default {
     }
   },
   mounted () {
-    // for (var i = 0; i < this.showList.length; i++) {
-    //   this.showList[i].date =  this.showList[i].dateTimes.substring(5, 10);
-    //   this.showList[i].time =  this.showList[i].dateTimes.substring(11, 16);
-    // }
     this.getCartIds()
       .then(v => {
          if(v) {
@@ -262,6 +259,7 @@ export default {
   .item-imgbox{
     padding-top: 20rpx;
     text-align: center;
+    position: relative;
   }
 
   .item-image{
@@ -272,6 +270,16 @@ export default {
   }
   .item-amount{
     color: #ea6f6c;
+  }
+  .item .label {
+    background: green;
+    color: #fff;
+    position: absolute;
+    top: 10px;
+    left: 24px;
+    width: 20px;
+    padding: 2px 0;
+    font-size: 12px;
   }
   .marbot{
     margin-bottom: 20rpx;
