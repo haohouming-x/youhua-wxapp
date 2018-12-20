@@ -22,19 +22,21 @@
       <div class="prod-content">
         <wxParse :content="article" @preview="preview" @navigate="navigate" />
       </div>
-      <div class="marleft title">同类油画推荐</div>
-      <div class="over">
+      <template v-if="recommed.length > 0">
+        <div class="marleft title">同类油画推荐</div>
+        <div class="over">
 
-        <div class="item" v-for="(item,index) in recommed" :key="index" @click="toDetails(item.id)">
-          <remote-image className="item-img" mode="widthFix" :src="item.image" />
-          <div>{{item.name}}</div>
-          <div>{{item.describes}}</div>
+          <div class="item" v-for="(item,index) in recommed" :key="index" @click="toDetails(item.id)">
+            <remote-image className="item-img" mode="widthFix" :src="item.image" />
+            <div>{{item.name}}</div>
+            <div>{{item.describes}}</div>
+          </div>
         </div>
-      </div>
+      </template>
       <!-- <div class="bottom">
         <div class="home" @click="toHomePage">首页</div>
         <div class="service">客服</div>
-        <div class="collect" @click="$router.push('/pages/myGallery/index')">收藏</div>
+        <div class="collect" @click="storeUp">收藏</div>
         <div class="rent" @click="rent">租这幅</div>
       </div> -->
       <div class="pay_footer">
@@ -52,7 +54,7 @@
               </p>
             </button>
           </div>
-          <div class="footer-le_btn ri" @click="$router.push('/pages/myGallery/index')">
+          <div class="footer-le_btn ri" @click="storeUp">
             <img src="../../assets/images/icon4.png" alt="">
             <p class="btn_text">收藏</p>
           </div>
@@ -89,13 +91,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isValidMember: 'userInfo/isValidMember'
+      isValidMember: 'userInfo/isValidMember',
+      getSimilarList: 'goods/getSimilarList'
     })
   },
   methods: {
-    ...mapActions('goodsDetail', [
-     'getGoods'
-   ]),
+    ...mapActions({
+     getGoods: 'goodsDetail/getGoods',
+     addCartId: 'storage/addCartId',
+     addStoreUpIds: 'storage/addStoreUpIds'
+   }),
     toGetGooods (id) {
       this.getGoods({
         id: id
@@ -109,7 +114,7 @@ export default {
         this.detail.salesVolume =res.stock
         this.article =res.details
         this.imgUrls = res.pictures.map(v => ({url: v.image}))
-        this.recommed = res.classify
+        this.recommed = this.getSimilarList(5);
       })
     },
     preview(src, e) {
@@ -130,55 +135,39 @@ export default {
         return ;
       }
 
-      let that =this
-      let yemianids = []
-
-        wx.getStorage({
-            key: 'id',
-            success (res) {
-              console.log(res)
-              if  (res.data) {
-                yemianids = res.data
-                if(yemianids.indexOf(that.yemianid) !== -1 ) {
-                  console.log('indexof')
-                  wx.showToast({
-                    title: '已添加',
-                    icon: 'none',
-                    duration: 2000
-                  })
-                } else {
-
-                    yemianids.push(that.yemianid)
-                    console.log('yes')
-                    wx.setStorage({
-                      key:"id",
-                      data:yemianids
-                    })
-                    wx.showToast({
-                      title: '添加成功',
-                      icon: 'success',
-                      duration: 2000
-                    })
-                }
-              }
-            },
-            complete (res) {
-              if (res.errMsg === 'getStorage:fail data not found' || res.errMsg === 'getStorage:fail:data not found') {
-                //console.log('com')
-                yemianids.push(that.yemianid)
-                wx.setStorage({
-                  key:"id",
-                  data:yemianids
-                })
-                wx.showToast({
-                    title: '添加成功',
-                    icon: 'success',
-                    duration: 2000
-                  })
-              }
-            }
+      this.addCartId(this.yemianid)
+        .then(v => {
+          wx.showToast({
+            title: '添加成功',
+            icon: 'success',
+            duration: 2000
+          })
+        })
+        .catch(v => {
+           wx.showToast({
+             title: '已添加',
+             icon: 'none',
+             duration: 2000
+           })
         })
       //  this.$router.push('/pages/myGallery/index')
+    },
+    storeUp() {
+      this.addStoreUpIds(this.yemianid)
+        .then(v => {
+          wx.showToast({
+            title: '收藏成功',
+            icon: 'success',
+            duration: 2000
+          })
+        })
+        .catch(v => {
+           wx.showToast({
+             title: '已收藏',
+             icon: 'none',
+             duration: 2000
+           })
+        })
     }
   },
   created() {

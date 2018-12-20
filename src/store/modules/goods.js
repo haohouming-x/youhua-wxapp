@@ -31,7 +31,7 @@ const getters = {
   // 详情
   currentData: (state) => state.current,
   // 同类列表
-  similarList: (state) => (randomCount) => {
+  getSimilarList: (state) => (randomCount) => {
     let arr = state.list,
         result = [],
         m = arr.length,
@@ -43,6 +43,7 @@ const getters = {
       t = arr[m];
       arr[m] = arr[i];
       arr[i] = t;
+
       result.push(arr[m]);
     }
 
@@ -85,6 +86,22 @@ const actions = {
 
             return state.current;
           });
+  },
+  getStoreUpGoods({commit, dispatch}, data={page: 1}) {
+    return dispatch('storage/getStoreUpIds', null, {root: true})
+      .then(ids => {
+        const newData = {
+          ...data,
+          id: ids
+        }
+
+        return Vue.$http('mygallery.goods', {data: newData, method: 'get'})
+      })
+      .then(v => {
+        commit(SET_LIST_GOODS, {data: v, isConcat: false});
+
+        return state.list;
+      })
   }
 }
 

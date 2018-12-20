@@ -165,8 +165,9 @@
                  timeStamp,
                  success: () => {
                    console.log('ok')
-                   wx.removeStorage({key: 'id'});
-                   this.afterOrderPay();
+
+                   this.removeCartIds()
+                     .then(_ => this.afterOrderPay());
 
                    this.$router.push({path: '/pages/pay/payed', reLaunch: true});
                  }
@@ -212,7 +213,8 @@
         getAddress: 'address/getUserAddress',
         postUserOrder: 'myGallery/postUserOrder',
         afterOrderPay: 'pay/afterOrderPay',
-        payOrder: 'pay/order'
+        payOrder: 'pay/order',
+        removeCartIds: 'storage/removeCartIds'
       }),
     }
   }

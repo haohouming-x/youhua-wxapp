@@ -125,19 +125,16 @@ export default {
     //   this.showList[i].date =  this.showList[i].dateTimes.substring(5, 10);
     //   this.showList[i].time =  this.showList[i].dateTimes.substring(11, 16);
     // }
-    wx.getStorage({
-      key: 'id',
-      success: (res) => {
-        this.getCurrentData(res.data)
-          .catch(v => console.log(v))
-      },
-      fail: (res) => {
-        if(res.errMsg === 'getStorage:fail data not found' || res.errMsg === 'getStorage:fail:data not found') {
-          this.getCurrentOrders()
-            .catch(v => console.log(v))
-        }
-      }
-    })
+    this.getCartIds()
+      .then(v => {
+         if(v) {
+           this.getCurrentData(v)
+             .catch(v => console.log(v))
+         }else {
+           this.getCurrentOrders()
+             .catch(v => console.log(v))
+         }
+      })
   },
   computed: {
     ...mapGetters({
@@ -164,7 +161,9 @@ export default {
       getLocalGoods: 'goods/getPayGoods',
       getCurrentOrders: 'myGallery/getCurrentOrders',
       setCancelIds: 'myGallery/setCancelIds',
-      getOrderLogistics: 'myGallery/getOrderLogistics'
+      getOrderLogistics: 'myGallery/getOrderLogistics',
+      getCartIds: 'storage/getCartIds',
+      delectCartId: 'storage/delectCartId'
     }),
     toHistoryPage() {
       this.$router.push('/pages/myGallery/historyRecord')
@@ -178,25 +177,14 @@ export default {
         content: '是否确认删除',
         success:(res) => {
           if (res.confirm) {
-            wx.getStorage({
-              key: 'id',
-              success: (res) => {
-                if(res.data) {
-                  const newIds = res.data.filter(v => v != id);
-
-                  wx.setStorage({
-                    key:"id",
-                    data: newIds
-                  })
-
-                  this.setLocalGoods({
-                     data: this.payGoods.filter(v=>v.id != id)
-                  })
-                }
-              }
-            })
+            this.delectCartId(id)
+              .then(value => {
+                this.setLocalGoods({
+                  data: value
+                })
+              })
           } else if (res.cancel) {
-            console.log('用户点击取消')
+
           }
         }
       })
