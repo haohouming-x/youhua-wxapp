@@ -15,7 +15,7 @@
 import { mapState, mapActions } from 'vuex'
 export default {
   computed: {
-    // 使用vuex的mapState注入状态
+    // FRAME: 使用vuex的mapState注入状态
     ...mapState({
       // 根据modules文件夹下的store文件名为这里使用的store键名
       count: state => state.counter.count
@@ -29,7 +29,7 @@ export default {
     })
   },
   methods: {
-    // 使用vuex的mapActions注入状态操作方法（第一个参数写的字符串为store文件名，同上）
+    // FRAME: 使用vuex的mapActions注入状态操作方法（第一个参数写的字符串为store文件名，同上）
     ...mapActions('counter', [
       'increment',
       'decrement',

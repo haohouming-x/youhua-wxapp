@@ -22,9 +22,11 @@ const clearFunction = (_tipConfig) => {
 
 // 接口请求封装函数
 const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
-    const [enumName, params] = url.split('@');
+  const [enumName, params] = url.split('@');
 
-    let _url = API[enumName] || '';
+  let _url = API[enumName] || '';
+
+  if(_url === '') throw Error(`枚举'${enumName}'没有定义`);
 
   _url = params ? _url.replace(/\{([^{}]+)\}/g, (_, key) => {
     const match = params.match(`[( ?)\\{|( ?)\\,](${key}( ?):\\s*)(.*?)([( ?)\\,|( ?)\\}])`)
@@ -34,34 +36,34 @@ const handleRequest = (url = '', {data = {}, ...flyConfig}, tipConfig = {}) => {
     return match[3]
   }) : _url;
 
-    _url = Config.host + _url;
+  _url = Config.host + _url;
 
-    let flyio = Flyio.request(_url, data, {...Config.flyConfig, ...flyConfig})
+  let flyio = Flyio.request(_url, data, {...Config.flyConfig, ...flyConfig})
 
-    let _tipConfig = {...Config.reqConfig, ...tipConfig}
-    // 开启loading
-    clearTimeout(loadingTimer) // 多个接口时需要清除上一个loading
-    loadingTimer = setTimeout(() => {
-      _tipConfig.isLoading && wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-    }, Config.loading.limitTime)
-
-    // 计算当前的promise是否全部加载完成
-    promises.push(flyio)
-    Flyio.all(promises).then(data => {
-      if (data.length !== promises.length) return
-      clearFunction(_tipConfig)
-    }).catch(() => {
-      clearFunction(_tipConfig)
+  let _tipConfig = {...Config.reqConfig, ...tipConfig}
+  // 开启loading
+  clearTimeout(loadingTimer) // 多个接口时需要清除上一个loading
+  loadingTimer = setTimeout(() => {
+    _tipConfig.isLoading && wx.showLoading({
+      title: '加载中',
+      mask: true
     })
-    // 返回请求
-    return flyio.then((res) => {
-        return res
-    }).catch(err => {
-      errorFunction(_tipConfig, err)
-    })
+  }, Config.loading.limitTime)
+
+  // 计算当前的promise是否全部加载完成
+  promises.push(flyio)
+  Flyio.all(promises).then(data => {
+    if (data.length !== promises.length) return
+    clearFunction(_tipConfig)
+  }).catch(() => {
+    clearFunction(_tipConfig)
+  })
+  // 返回请求
+  return flyio.then((res) => {
+    return res
+  }).catch(err => {
+    errorFunction(_tipConfig, err)
+  })
 }
 
 export default handleRequest

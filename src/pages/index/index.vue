@@ -4,7 +4,7 @@
     <div class="userinfo" @click="bindViewTap">
       <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
       <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
+        <p>{{userInfo.nickName}}</p>
       </div>
     </div>
 
@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import card from '@/components/card'
 export default {
   data () {
     return {
@@ -30,11 +29,6 @@ export default {
       userInfo: {}
     }
   },
-
-  components: {
-    card
-  },
-
   methods: {
     bindViewTap () {
       this.$router.push('/pages/logs/index')

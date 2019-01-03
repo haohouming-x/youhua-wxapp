@@ -1,5 +1,6 @@
 const LOADING_LIMIT_TIME = 500
 export default {
+  // 接口域名
   // host: 'https://gezdqnryhj3gk4ttnfxw4lzrfyydu43xmftwozlsfzyhe2ltnuxhs3lm.prism.stoplight.io',
   host: 'https://www.nowhoarts.com',
   // 关于接口loading的配置
@@ -19,6 +20,7 @@ export default {
   // 异常情况
   resError: {
     // 异常默认提示的方法
+    // FRAME: 错误信息预设，根据实际修改
     tipShow: (err) => {
       setTimeout(() => {
         let error = ''
