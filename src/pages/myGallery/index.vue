@@ -116,11 +116,6 @@ export default {
   created () {
 
   },
-  onShow() {
-    if (!this.isValidMember) {
-      this.$router.push('/pages/member/index')
-    }
-  },
   mounted () {
     this.getCartIds()
       .then(v => {
@@ -166,6 +161,15 @@ export default {
       this.$router.push('/pages/myGallery/historyRecord')
     },
     pay() {
+      if (!this.isValidMember) {
+          wx.showModal({
+            title: '提示',
+            content: '尚不是会员，无法支付',
+            success:(res) => {
+              this.$router.push('/pages/member/index')
+            }
+          })
+      }
       this.$router.push('/pages/myGallery/payPage')
     },
     delectStorage(id) {
