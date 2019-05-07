@@ -36,7 +36,6 @@ const actions = {
         })
     },
   changeUserInfo({commit, state}, data={}) {
-    console.log(data);
         return Vue.$http(`globalUrl.getConsumer@{id:${data.id}}`, {data, method: 'put'})
             .then(v => {
                 // console.log(v);

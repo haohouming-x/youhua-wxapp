@@ -10,7 +10,6 @@ import MpvueRouterPatch from 'mpvue-router-patch'
 import routeConfig from '@/router'
 Vue.use(MpvueRouterPatch)
 
-
 const notCheckLoginPaths = routeConfig
       .filter(v => v.isCheckLogin === false)
       .map(v => v.path);

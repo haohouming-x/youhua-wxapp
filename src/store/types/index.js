@@ -35,3 +35,5 @@ export const SET_MEMBER_INFO = 'set_member_info';
 export const SET_APPEND_PAYIDS = 'set_append_payids';
 
 export const SET_CANCEL_PAYIDS = 'set_cancel_payids';
+
+export const SET_CURRENT_CUSTOM_PAGE = 'set_current_custom_page';

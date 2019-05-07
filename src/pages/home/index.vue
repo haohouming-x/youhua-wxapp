@@ -1,7 +1,7 @@
 <template>
 
     <div>
-      <carousel-figure :swiperImgs="imgUrls"></carousel-figure>
+      <carousel-figure :swiperImgs="imgUrls" @click="handleFigureClick"></carousel-figure>
       <div v-if="!isValidMember">
         <div class=" memberbox" @click="beMember"></div>
       </div>
@@ -79,7 +79,7 @@ export default {
       goods: 'goods/currentList'
     }),
     imgUrls() {
-      return this.banners.map(v => ({url: v.image, title: v.name}))
+      return this.banners.map(v => ({url: v.image, title: v.name, ...v}))
     }
   },
   mounted () {
@@ -105,6 +105,16 @@ export default {
 
     this.getGoodsListByClassifyId({id: item.id,page: this.page})
    },
+   handleFigureClick(item) {
+     switch(item.type) {
+       case 'GD':
+         this.$router.push({path: '/pages/goodsDetail/index', query: {id: item.goods.id}});
+         break;
+       case 'CP':
+         this.$router.push({path: '/pages/customPage/index', query: {id: item.customPage.id}});
+         break;
+     }
+   },
    checkoutToStoreUp() {
      this.checkout('收藏');
 
@@ -126,8 +136,16 @@ export default {
     beMember() {
       this.$router.push('/pages/member/index')
     }
+ },
+ onPullDownRefresh() {
+    Promise.all([
+      this.getBannerList(),
+      this.getClassifyListAndGoods({}, this.selectedClassifyIndex)
+        .then(v => {
+            if(this.classifies.length > 0) this.headline = this.classifies[0].name;
+        })
+    ]).then(wx.stopPullDownRefresh);
  }
-
 }
 </script>
 <style >

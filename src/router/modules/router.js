@@ -2,7 +2,8 @@ module.exports = [
   {
     path: '/pages/index/index',
     config: {
-      navigationBarTitleText: '首页'
+      navigationBarTitleText: '首页',
+      enablePullDownRefresh: true
     }
   },
   {
@@ -85,6 +86,12 @@ module.exports = [
     path: '/pages/home/login',
     config: {
       navigationBarTitleText: '用户授权'
+    }
+  },
+  {
+    path: '/pages/customPage/index',
+    config: {
+      navigationBarTitleText: '宣传页面'
     }
   }
 ]

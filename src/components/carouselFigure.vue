@@ -61,6 +61,7 @@ import remoteImage from '@/components/remoteImage'
         // console.log(e)
       },
       handleTap (item) {
+        this.$emit('click', item);
         console.log(item)
       }
     }

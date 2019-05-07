@@ -11,7 +11,7 @@
         </div>
         <div class="text-ri">
           <del class="prod-market-prive">市场价<span>{{detail.markerPrice}}</span></del>
-          <div class="prod-msg">销量:{{detail.salesVolume}} | 押金:{{detail.deposit}}</div>
+          <div class="prod-msg">库存:{{detail.salesVolume}} | 押金:{{detail.deposit}}</div>
         </div>
       </div>
     </div>
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     ...mapActions({
-     getGoods: 'goodsDetail/getGoods',
+     getGoods: 'goods/getGoodsById',
      addCartId: 'storage/addCartId',
      addStoreUpIds: 'storage/addStoreUpIds'
    }),
@@ -108,7 +108,7 @@ export default {
         console.log(res)
         this.detail.url = res.image
         this.detail.name = res.name
-        this.detail.size = res.longSize +'*' + res.wideSize
+        this.detail.size = res.longSize + '*' + res.wideSize + '(mm)'
         this.detail.markerPrice = res.marketPrice
         this.detail.deposit  =res.depositPrice
         this.detail.salesVolume =res.stock

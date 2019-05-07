@@ -23,7 +23,6 @@ const actions = {
         commit(SET_LIST_BANNER, {data: v});
 
         return state.list;
-        console.log(state)
       });
   },
 }

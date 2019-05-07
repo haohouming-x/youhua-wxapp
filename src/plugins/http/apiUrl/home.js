@@ -4,6 +4,7 @@ const API = {
   'globalUrl.getProvince': '/api/banners', // 获取省市
   'globalUrl.login': '/mpapp/login_or_create', // 小程序登录
   'globalUrl.getConsumer': '/api/consumers/{id}',
+  'globalUrl.getCustomPage': '/api/custom_pages/{id}',
   'user.getAddress': '/api/consumers/{id}/receipt_infos',
   'address.info': '/api/receipt_infos/{id}',
   // 轮播图
