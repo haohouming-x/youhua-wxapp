@@ -18,10 +18,13 @@
     <div class="marleft title">
       押金规则
     </div>
-    <div class="rule-content">押金规则内容</div>
+      <div class="rule-content">押金规则内容</div>
+      <template v-if="article">
+      <div class="marleft title">详情</div>
       <div class="prod-content">
         <wxParse :content="article" @preview="preview" @navigate="navigate" />
       </div>
+      </template>
       <template v-if="recommed.length > 0">
         <div class="marleft title">同类油画推荐</div>
         <div class="over">
