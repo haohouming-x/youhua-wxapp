@@ -63,7 +63,7 @@ const getters = {
   showLogistics: state => state.showLogistics,
   orderId: state => state.orderList[0] ? state.orderList[0].id : null,
   payOrderIds: (state, getters) => state.showLogistics ? [] :
-      getters.orderList.filter(v => state.cancelPayOrderIds.indexOf(v.id) < 0).map(v => v.id),
+    getters.orderList.filter(v => state.cancelPayOrderIds.indexOf(v.id) < 0).map(v => v.id),
   orderList: state => mapApiDataToView(state.orderList),
   completedOrderList: state => mapApiDataToView(state.completedOrderList),
   payOrderList: (state, getters) => getters.orderList.filter(v => getters.payOrderIds.indexOf(v.id) > -1),
@@ -144,28 +144,32 @@ const actions = {
 
         let arr = [];
 
-        const newMeta = res.reduce((acc, v) => {
-          v.orderBill = v.orderBill.reduce((billAcc, bill) => {
-            if(bill.status === 'RT') arr.push(bill);
-            else if(bill.status === "AE") billAcc.push(bill);
+        const newMeta = res
+              .reduce((acc, v) => {
+                v.orderBill = v.orderBill.reduce((billAcc, bill) => {
+                  if(bill.status === 'RT') arr.push(bill);
+                  else if(bill.status === "AE") billAcc.push(bill);
 
-            return billAcc;
-          }, []);
+                  return billAcc;
+                }, []);
 
-          if(v.orderBill.length > 0) acc.push(v);
+                if(v.orderBill.length > 0) acc.push(v);
 
-          return acc;
-        }, []).filter(v => {
-          v.orderBill = v.orderBill.filter(bill => {
-            const mLength = arr.length;
+                return acc;
+              }, [])
+              .filter(v => {
+                v.orderBill = v.orderBill.filter(bill => {
+                  const isRT = arr.some((a, i) => {
+                    const is = a.goods.id === bill.goods.id;
+                    if(is) arr.splice(i, 1)
+                    return is;
+                  })
 
-            arr = arr.filter(a => a.goods.id !== bill.goods.id && a.depositPrice !== bill.depositPrice);
+                  return !isRT;
+                });
 
-            return mLength === arr.length;
-          });
-
-          return v.orderBill.length > 0;
-        })
+                return v.orderBill.length > 0;
+              })
 
         commit(SET_ORDER, {data: newMeta});
       })
