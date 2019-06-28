@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import {SET_STORE_UP} from '../types'
 
 const storageKeys = {
   // 购物车
@@ -7,14 +8,23 @@ const storageKeys = {
   storeUpIds: 'storeUpIds'
 }
 
-const state = {}
+const state = {
+  storeUpIds: wx.getStorageSync(storageKeys.storeUpIds) || []
+}
 
-const getters = {}
+const getters = {
+  isStoreUp: (state) => (goodsId) => state.storeUpIds.indexOf(goodsId) !== -1
+}
 
-const mutations = {}
+const mutations = {
+  [SET_STORE_UP] (state, payload) {
+    state.storeUpIds = payload.data
+  }
+}
 
 const actions = {
   getWxStorage({}, key) {
+    // const newKey = `${key}@@${rootState.userInfo.userInfo.id}`;
     try {
        const value = wx.getStorageSync(key);
 
@@ -92,14 +102,26 @@ const actions = {
   getStoreUpIds({dispatch}) {
     return dispatch('getWxStorage', storageKeys.storeUpIds)
   },
-  addStoreUpIds({dispatch}, id) {
+  addStoreUpIds({dispatch, commit, state}, id) {
     return dispatch('addToArrayStorage', {key: storageKeys.storeUpIds, id})
+      .then(v => {
+        commit(SET_STORE_UP, {data: v});
+        return state.storeUpIds;
+      })
   },
-  delectStoreUpIds({dispatch}, id) {
+  delectStoreUpIds({dispatch, commit, state}, id) {
     return dispatch('delectToArrayStorage', {key: storageKeys.storeUpIds, id})
+      .then(v => {
+        commit(SET_STORE_UP, {data: v});
+        return state.storeUpIds;
+      })
   },
-  removeStoreUpIds({dispatch}) {
+  removeStoreUpIds({dispatch, commit, state}) {
     return dispatch('removeStorage', storageKeys.storeUpIds)
+      .then(v => {
+        commit(SET_STORE_UP, {data: []});
+        return state.storeUpIds;
+      })
   },
 }
 

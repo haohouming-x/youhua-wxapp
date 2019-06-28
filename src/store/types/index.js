@@ -37,3 +37,5 @@ export const SET_APPEND_PAYIDS = 'set_append_payids';
 export const SET_CANCEL_PAYIDS = 'set_cancel_payids';
 
 export const SET_CURRENT_CUSTOM_PAGE = 'set_current_custom_page';
+
+export const SET_STORE_UP = 'set_store_up';

@@ -57,9 +57,13 @@
               </p>
             </button>
           </div>
-          <div class="footer-le_btn ri" @click="storeUp">
+          <div class="footer-le_btn ri" v-if="!isStoreUp" @click="storeUp">
             <img src="../../assets/images/icon4.png" alt="">
             <p class="btn_text">收藏</p>
+          </div>
+           <div class="footer-le_btn ri" v-else @click="storeUp">
+            <img src="../../assets/images/icon4.png" alt="">
+            <p class="btn_text">已收藏</p>
           </div>
         </div>
         <div class="inner_ri" @click="rent">租这幅</div>
@@ -95,14 +99,19 @@ export default {
   computed: {
     ...mapGetters({
       isValidMember: 'userInfo/isValidMember',
-      getSimilarList: 'goods/getSimilarList'
-    })
+      getSimilarList: 'goods/getSimilarList',
+      getIsStoreUp: 'storage/isStoreUp'
+    }),
+    isStoreUp() {
+      return this.getIsStoreUp(this.yemianid);
+    }
   },
   methods: {
     ...mapActions({
      getGoods: 'goods/getGoodsById',
      addCartId: 'storage/addCartId',
-     addStoreUpIds: 'storage/addStoreUpIds'
+     addStoreUpIds: 'storage/addStoreUpIds',
+     delectStoreUpIds: 'storage/delectStoreUpIds'
    }),
     toGetGooods (id) {
       this.getGoods({
@@ -165,11 +174,14 @@ export default {
           })
         })
         .catch(v => {
-           wx.showToast({
-             title: '已收藏',
-             icon: 'none',
-             duration: 2000
-           })
+            this.delectStoreUpIds(this.yemianid)
+               .then(_ => {
+                 wx.showToast({
+                   title: '已取消',
+                   icon: 'success',
+                   duration: 2000
+                 })
+               })
         })
     }
   },

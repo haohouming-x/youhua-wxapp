@@ -81,21 +81,22 @@ const actions = {
     const {id} = data;
 
     return Vue.$http(`gooddetail.goods@{id: ${id}}`, {method: 'get'})
-          .then(v => {
-            commit(SET_CURRENT_GOODS, {data: v});
+      .then(v => {
+        commit(SET_CURRENT_GOODS, {data: v});
 
-            return state.current;
-          });
+        return state.current;
+      });
   },
   getStoreUpGoods({commit, dispatch}, data={page: 1}) {
     return dispatch('storage/getStoreUpIds', null, {root: true})
       .then(ids => {
-        const newData = {
-          ...data,
-          id: ids
-        }
+        if(ids && ids.length > 0) {
+          const newData = {...data, id: ids}
 
-        return Vue.$http('mygallery.goods', {data: newData, method: 'get'})
+          return Vue.$http('mygallery.goods', {data: newData, method: 'get'})
+        }else {
+          return Promise.resolve([]);
+        }
       })
       .then(v => {
         commit(SET_LIST_GOODS, {data: v, isConcat: false});
