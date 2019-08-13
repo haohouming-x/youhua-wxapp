@@ -3,7 +3,13 @@
     <div>
       <carousel-figure :swiperImgs="imgUrls" @click="handleFigureClick"></carousel-figure>
       <div v-if="!isValidMember">
-        <div class=" memberbox" @click="beMember"></div>
+        <div class=" memberbox" @click="beMember">
+           <div>
+              <h3>开启你的专属画廊</h3>
+              <h5>无限下单 | 送货上门免运费</h5>
+           </div>
+           <div>成为会员> </div>
+        </div>
       </div>
       <div class="classifybox">
         <div class="classify-item" v-for="(item,index) in  classifies" :key="index" @click="handleClassify(item)">
@@ -152,7 +158,17 @@ export default {
   .memberbox{
     background: #cab0a7;
     height: 100rpx;
-    width: 100%;
+    color: #fff;
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .memberbox h3 {
+    font-size: 22px;
+  }
+  .memberbox h5 {
+    font-size: 16px;
   }
   .classifybox{
     margin-top: 20rpx;
