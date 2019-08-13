@@ -2,8 +2,10 @@
   <div class="wrap">
     <div class="card">
       <div> {{member.name}}</div>
-      <div>{{member.presentPrice}}元 <text>{{member.originalPrice}}元</text> </div>
-      <div>自购买当日起90天内免费更换油画</div>
+      <div>{{member.presentPrice}}元 <text class="card-p">{{member.originalPrice}}元</text> </div>
+      <!---- <div class="card-desc">自购买当日起90天内免费更换油画</div> ---->
+      <div class="card-desc">{{member.explainText}}</div>
+      <remote-image className="card-img" :src="member.image" />
     </div>
     <div class="just">
       <text>原价</text>
@@ -34,22 +36,29 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import remoteImage from '@/components/remoteImage'
+
 export default {
+  components: {
+    remoteImage
+  },
   data () {
     return{
       planlist: [
         {url:'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: '无限换租',title:'租够再下一单',describe:'开通包月会员'},
         {url:'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: '无限换租',title:'租够再下一单',describe:'开通包月会员'},
         {url:'http://pic1.cxtuku.com/00/15/14/b456235b5796.jpg',name: '无限换租',title:'租够再下一单',describe:'开通包月会员'}
-      ],
-      member: {}
+      ]
     }
   },
   computed: {
     ...mapGetters({
       list: 'member/list',
       isValidMember: 'userInfo/isValidMember'
-    })
+    }),
+    member() {
+      return this.list[0] || {};
+    }
   },
   methods: {
     ...mapActions({
@@ -75,9 +84,6 @@ export default {
             ...other,
             timeStamp,
             success: (e) => {
-              console.log('ok')
-              console.log(e)
-
               this.memberinfo()
                 .then(v => this.$router.replace({path: '/pages/home/index'}))
             }
@@ -89,15 +95,9 @@ export default {
 
   },
   onShow() {
-    this.getmember().then((res) => {
-      this.member = this.list[0]
-      console.log(res)
-      console.log(this.member)
-      this.memberinfo().then((v) => {
-        console.log(v)
-      })
-      // return this.paymember(res[0].id, this.userInfo.id)
-    })
+    this.getmember();
+
+    this.memberinfo();
   },
   mounted () {
     // this.paymember({consumer_id: this.member.}).then((res) => {
@@ -119,6 +119,20 @@ export default {
     padding: 20rpx ;
     border-radius: 20rpx;
 
+  }
+  .card div {
+    margin-bottom: 5px;
+  }
+  .card-p {
+    text-decoration:line-through;
+    color: #999;
+  }
+  .card-desc {
+    color: #999;
+  }
+  .card-img {
+    width: 30px;
+    height: 30px;
   }
   .planbox{
     display: flex;
