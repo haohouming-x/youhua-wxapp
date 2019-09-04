@@ -12,7 +12,7 @@ const mapApiDataToView = (orderList) => {
       dataList.push(value)
     })
   })
-  // console.log(datalist)
+  console.log(dataList)
   return dataList;
 }
 
@@ -157,6 +157,7 @@ const actions = {
 
                 return acc;
               }, [])
+              .sort((a, b) => a.id-b.id)
               .filter(v => {
                 v.orderBill = v.orderBill.filter(bill => {
                   const isRT = arr.some((a, i) => {
