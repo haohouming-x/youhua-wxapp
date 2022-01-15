@@ -58,7 +58,7 @@
     "sass-bem": "^2.6.5",
     "sass-loader": "^7.0.1",
     "semver": "^5.3.0",
-    "shelljs": "^0.7.6",
+    "shelljs": "^0.8.5",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "url-loader": "^0.5.8",
     "vue-style-loader": "^3.0.1",
